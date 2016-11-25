@@ -1,0 +1,8 @@
+{
+    "name": "roads.app",
+    "version": "1.4.0",
+    "main": "main",
+    "description": "PLPCO Roads Viewer",
+    "homepage": "https://github.com/agrc/roads.utah.gov",
+    "dojoBuild": "app.profile.js"
+}
