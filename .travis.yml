@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+    - "6"
+before_install:
+    - npm install -g grunt-cli
+    - npm install -g bower
+    - npm install -g npm
+    - bower install
+    - npm update
+    - bower update
+notifications:
+    email:
+        on_success: change
+        on_failure: change
+sudo: false
