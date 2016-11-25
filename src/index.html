@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>PLPCO Roads Viewer</title>
+
+		<!-- META TAGS -->
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta name="description" content="We should do some SEO" />
+		<meta name="keywords" content="Comma, Separated List"/>
+		<link rel="shortcut icon" href="content/images/favicon.png" type="image/png" />
+		<!-- disable zooming in ios -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+		<!-- CSS -->
+		<link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.6/js/dojo/dijit/themes/claro/claro.css">
+		<link rel="stylesheet" type="text/css" href="content/css/core.css" />
+		<link rel="stylesheet" type='text/css' href='http://serverapi.arcgisonline.com/jsapi/arcgis/2.6/js/esri/dijit/css/Popup.css'/>
+		<link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.6/js/dojo/dojox/grid/resources/claroGrid.css">
+		<link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.6/js/dojo/dojox/grid/resources/Grid.css">
+
+		<!-- JAVASCRIPT -->
+		<script type="text/javascript" src='content/js/globals.js'></script>
+		<script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.6"></script>
+		<!-- <script type="text/javascript" src="content/nls/PLPCORoadsViewerLyr_en-us.js"></script>
+		<script type="text/javascript" src="content/PLPCORoadsViewerLyr.js"></script> -->
+		<script type="text/javascript" src="content/js/core.js"></script> <!-- remove this for build -->
+
+		<!-- GOOGLE ANALYTICS -->
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-11849964-39']);
+			_gaq.push(['_trackPageview']); (function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+	</head>
+	<body class="claro">
+		<div id='loading-overlay'>Loading Application...</div>
+		<div id='main-container' dojoType='dijit.layout.BorderContainer'>
+			<div id='title-pane' dojoType='dijit.layout.ContentPane' region='top'>
+				<span id='title'>PLPCO Roads Viewer</span>
+				<a id='version' href='ReleaseNotes.html' target="_blank"></a>
+				<div id='user-menu'></div>
+			</div>
+			<div id='side-bar' dojoType='dijit.layout.ContentPane' region='left'>
+				<div class='side-bar-sizer'>
+					<div class='padder'>
+						<div class='county-container'>
+							County: <span id='county-name'></span>
+						</div>
+						<button dojoType='dijit.form.Button' id='select-county'>Select County</button>
+						<div class='clearer'></div>
+					</div>
+					<div id='pane-stack'>
+						<div title='Search' open='true'>
+							<div id='magic-zooms-container'></div>
+							<div id='place-name-search'></div>
+							<div id='city-search'></div>
+						</div>
+						<div id='roads-identify-pane' title='Data for Selected Road'></div>
+						<div title='Map Layers'>
+							<div id='roads-layers-toc'></div>
+							<h4>Background Layers</h4>
+							<div id='plss-toggler'></div>
+							<div id='overlays-toggler'></div>
+							<div id='background-layers-toc'></div>
+						</div>
+						<div title='Legend'>
+							<div id='legend'></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id='center' dojoType='dijit.layout.ContentPane' region='center'>
+				<div id='sidebar-toggle'></div>
+				<div id='map-div'></div>
+			</div>
+		</div>
+		<div id='county-zoomer'></div>
+		<div id='log-in'></div>
+	</body>
+</html>

@@ -1,0 +1,125 @@
+@import '../agrc/themes/standard/map/BaseMap.css';
+@import '../agrc/themes/standard/map/BaseMapSelector.css';
+@import '../plpco/css/SideBarToggler.css';
+@import '../ijit/themes/standard/layout/PaneStack.css';
+@import '../agrc/themes/standard/locate/MagicZoom.css';
+@import '../agrc/themes/standard/locate/TRSsearch.css';
+@import '../plpco/css/CountyZoomer.css';
+@import '../plpco/css/LayerToggler.css';
+@import '../plpco/css/Toc.css';
+@import '../plpco/css/RoadsToc.css';
+@import '../plpco/css/LogInDialog.css';
+@import '../plpco/css/UserMenu.css';
+@import '../plpco/css/Identify.css';
+@import '../plpco/css/AttributeTable.css';
+
+body, html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+#main-container {
+    width: 100%;
+    height: 100%;
+}
+#loading-overlay {
+    padding: 10px;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #EDEDED;
+    z-index: 800;
+    vertical-align: middle;
+}
+
+/* TITLE PANE */
+#title-pane {
+    border: none;
+}
+#title {
+    font-size: 2em;
+    font-weight: bold;
+    float: left;
+}
+#version {
+    display: inline-block;
+    margin: 15px 0 0 5px;
+    color: gray;
+    text-decoration: none;
+    font-weight: bold;
+}
+#version:hover {
+    text-decoration: underline !important;
+}
+
+/* SIDE BAR */
+#side-bar {
+    width: 300px;
+    padding: 0;
+    overflow-y: auto;
+}
+.side-bar-sizer {
+    width: 302px;
+    margin: -1px;
+}
+.padder {
+    padding: 8px;
+}
+.county-container {
+    margin-top: 8px;
+    float: left;
+}
+#county-name {
+    font-weight: bold;
+}
+.padder .dijitButton {
+    float: right;
+}
+.clearer {
+    clear: both;
+}
+.magic-zoom {
+    position: relative;
+    z-index: auto;
+    width: 270px;
+}
+.magic-zoom .matches-table {
+    width: 270px;
+}
+.magic-zoom .text-box {
+    width: 268px;
+}
+#side-bar h4 {
+    margin-bottom: 3px;
+}
+#legend .esriLegendServiceLabel {
+    display: none;
+}
+#roads-identify-pane_pane {
+    padding: 0;
+}
+
+/* CENTER (MAP) */
+#center {
+    padding: 0;
+}
+#map-div {
+    width: 100%;
+    height: 100%;
+}
+
+/* GENERAL STUFF */
+/* remove orange outline in chrome */
+*:focus {
+    outline: none;
+}
+/* close button in dijit.Dialog */
+.dijitDialogCloseIcon {
+    display: none;
+}

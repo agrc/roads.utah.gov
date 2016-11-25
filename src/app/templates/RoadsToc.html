@@ -1,0 +1,29 @@
+<div>
+    <h4>Roads</h4>
+    <label dojoAttachPoint='photoContainer'>
+        <input dojoAttachPoint='photoCheckbox' type='checkbox' dojoType='dijit.form.CheckBox' checked>
+        <span>Photos</span><img dojoAttachPoint='legendPhotos'/>
+    </label><br>
+    <label>
+        <input dojoAttachPoint='bCheckbox' type='checkbox' dojoType='dijit.form.CheckBox' checked>
+        <span>Class B</span><img dojoAttachPoint='legendB'/> 
+        <span class='open-table-container'>
+            (<span dojoAttachPoint='openTableB' class='open-table'>open table</span>)
+        </span>
+    </label><br>
+    <label>
+        <input dojoAttachPoint='dCheckbox' type='checkbox' dojoType='dijit.form.CheckBox' checked>
+        <span>Class D</span><img dojoAttachPoint='legendD'/> 
+        <span class='open-table-container'>
+            (<span dojoAttachPoint='openTableD' class='open-table'>open table</span>)
+        </span>
+    </label><br>
+    <label>
+        <input dojoAttachPoint='dDissolvedCheckbox' type='checkbox' dojoType='dijit.form.CheckBox'>
+        <span>Class D Queries</span><img dojoAttachPoint='legendDQueries'>
+    </label>
+    <select dojoAttachPoint='querySelect'>
+        <option value='0'>less than 1/2 mile</option>
+        <option value='1'>less than 1 mile</option>
+    </select>
+</div>
