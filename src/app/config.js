@@ -52,6 +52,10 @@ define([
             '2011 Imagery (1m)'
         ],
 
+        // role: String
+        //      The role of the current user
+        role: 'PLPCO_Secure',
+
         // apiKey: String
         //      The api key used for services on api.mapserv.utah.gov
         // acquire at developer.mapserv.utah.gov
@@ -114,6 +118,7 @@ define([
             maskQueryTaskUrl: overlaysUrl + '/1',
             createUser: '/UserManagement/Register/CreateNewUser'
         },
+
         roleNames: {
             plpcoAdmin: 'PLPCO_Admin',
             plpcoSecure: 'PLPCO_Secure',
