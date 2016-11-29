@@ -2,6 +2,8 @@ define([
     'app/config',
     'app/_GetSubLayersMixin',
 
+    'dijit/registry',
+
     'dojo/dom-construct',
     'dojo/text!app/html/PhotosTemplate.html',
     'dojo/text!app/html/RoadsTemplateGeneral.html',
@@ -22,6 +24,8 @@ define([
 ], function (
     config,
     _GetSubLayersMixin,
+
+    registry,
 
     domConstruct,
     photosTemplate,
@@ -100,17 +104,18 @@ define([
         // roadsPanePlaceHolderText: String
         roadsPanePlaceHolderText: '<div>Please click on a road to see its attributes.</div>',
 
-
-        // parameters passed in via the constructor
-
         // roadsPane: esri.TitlePane
         roadsPane: null,
+
+
+        // parameters passed in via the constructor
 
         constructor: function () {
             // summary:
             //      creates the query and query task
             console.log('app/Identify:constructor', arguments);
 
+            this.roadsPane = registry.byId('roads-identify-pane');
             this.roadsPane.set('content', this.roadsPanePlaceHolderText);
 
             this.roadSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
@@ -151,8 +156,8 @@ define([
             //      description
             console.log('app/Identify:wireEvents', arguments);
 
-            this.connect(this.iTask, 'onError', this, 'onTaskError');
-            this.connect(this.iTask, 'onComplete', this, 'onIdentifyTaskComplete');
+            this.iTask.on('error', lang.hitch(this, this.onTaskError));
+            this.iTask.on('complete', lang.hitch(this, this.onIdentifyTaskComplete));
         },
         selectCounty: function (county) {
             // summary:
@@ -177,10 +182,10 @@ define([
                 this.qTaskB = new QueryTask(addLayerIdToUrl(this.BLayerId));
                 this.qTaskD = new QueryTask(addLayerIdToUrl(this.DLayerId));
 
-                this.connect(this.qTaskB, 'onError', this, 'onTaskError');
-                this.connect(this.qTaskB, 'onComplete', this, 'onQueryTaskComplete');
-                this.connect(this.qTaskD, 'onError', this, 'onTaskError');
-                this.connect(this.qTaskD, 'onComplete', this, 'onQueryTaskComplete');
+                this.qTaskB.on('error', lang.hitch(this, this.onTaskError));
+                this.qTaskB.on('complete', lang.hitch(this, this.onQueryTaskComplete));
+                this.qTaskD.on('error', lang.hitch(this, this.onTaskError));
+                this.qTaskD.on('complete', lang.hitch(this, this.onQueryTaskComplete));
             }
         },
         getPopup: function () {
@@ -191,7 +196,7 @@ define([
 
             this.popup = new Popup(null, domConstruct.create('div'));
             this.popup.resize(400, 325);
-            this.connect(this.popup, 'onHide', this, 'onPopupHide');
+            this.popup.on('hide', lang.hitch(this, this.onPopupHide));
 
             return this.popup;
         },
