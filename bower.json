@@ -1,0 +1,24 @@
+{
+  "name": "roads.utah.gov",
+  "description": "PLPCO Roads Viewer",
+  "version": "1.4.0",
+  "main": "",
+  "authors": [
+    "Scott Davis <stdavis@utah.gov>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/agrc/roads.utah.gov",
+  "private": true,
+  "resolutions": {
+    "dojo": "v1.11.2/esri-3.18.0",
+    "dojox": "v1.11.2/esri-3.18.0",
+    "dijit": "v1.11.2/esri-3.18.0",
+    "dgrid": "0.3.17/esri-3.14.0",
+    "xstyle": "v0.3.2"
+  },
+  "dependencies": {
+    "esri": "arcgis-js-api#3.18",
+    "agrc": "agrc-widgets#^5.0.2",
+    "ijit": "agrc-ijit#^3.1.3"
+  }
+}
