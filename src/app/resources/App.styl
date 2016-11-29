@@ -1,113 +1,90 @@
+@import 'nib';
+@import '../../dijit/themes/claro/claro.css';
+@import '../../esri/css/esri.css';
+@import '../../bootstrap/dist/css/bootstrap.css';
 @import '../../agrc/resources/map/BaseMap.css';
-@import '../../agrc/resources/map/BaseMapSelector.css';
-@import 'SideBarToggler.css';
+@import '../../ijit/themes/standard/layout/SideBarToggler.css';
 @import '../../ijit/themes/standard/layout/PaneStack.css';
+@import '../../layer-selector/resources/LayerSelector.css';
+@import '../../agrc/resources/locate/FindAddress.css';
 @import '../../agrc/resources/locate/MagicZoom.css';
-@import '../../agrc/resources/locate/TRSsearch.css';
-@import 'CountyZoomer.css';
-@import 'LayerToggler.css';
-@import 'Toc.css';
-@import 'RoadsToc.css';
-@import 'LogInDialog.css';
-@import 'UserMenu.css';
-@import 'Identify.css';
-@import 'AttributeTable.css';
+@import 'Identify';
 
-body, html {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-.main-container {
-    width: 100%;
-    height: 100%;
-}
+$side-bar-width = 300px
+$container-margin = 5px
+
+body, html, .app
+    width 100%
+    height 100%
+    margin 0
+    padding 0
+    overflow hidden
+    color #444
+
+.app
+    .container-with-border
+        border 1px solid #b5bcc7
 
 /* TITLE PANE */
-#title-pane {
-    border: none;
-}
-#title {
-    font-size: 2em;
-    font-weight: bold;
-    float: left;
-}
-.version {
-    display: inline-block;
-    margin: 15px 0 0 5px;
-    color: gray;
-    text-decoration: none;
-    font-weight: bold;
-}
-.version:hover {
-    text-decoration: underline !important;
-}
+    .title-container
+        position absolute
+        top $container-margin
+        left $container-margin
+        right $container-margin
+        padding 8px
+        h1
+            font-family Arial, sans-serif
+            margin 5px 0 0 5px
+            font-size 40px
+            letter-spacing -2px
+        .version
+            font-size 10px
+            text-decoration none
+            vertical-align sub
+            margin-left -10px
+            letter-spacing 0
+        .version:hover
+            text-decoration underline !important
+        >img
+            position absolute
+            top -3px
+            right 0
 
-/* SIDE BAR */
-#side-bar {
-    width: 300px;
-    padding: 0;
-    overflow-y: auto;
-}
-.side-bar-sizer {
-    width: 302px;
-    margin: -1px;
-}
-.padder {
-    padding: 8px;
-}
-.county-container {
-    margin-top: 8px;
-    float: left;
-}
-#county-name {
-    font-weight: bold;
-}
-.padder .dijitButton {
-    float: right;
-}
-.clearer {
-    clear: both;
-}
-.magic-zoom {
-    position: relative;
-    z-index: auto;
-    width: 270px;
-}
-.magic-zoom .matches-table {
-    width: 270px;
-}
-.magic-zoom .text-box {
-    width: 268px;
-}
-#side-bar h4 {
-    margin-bottom: 3px;
-}
-#legend .esriLegendServiceLabel {
-    display: none;
-}
-[data-dojo-attach-point='roadsIdentifyPane']_pane {
-    padding: 0;
-}
+    /* SIDE BAR */
+    .side-bar-container
+        width $side-bar-width
+        overflow-y auto
+        overflow-x hidden
+        position absolute
+        left $container-margin
+        top 75px
+        bottom $container-margin
+        .magic-zoom
+            position relative
+        .magic-zoom.first
+            z-index 27
+    .side-bar-padder
+        padding 10px
+        width $side-bar-width
+        margin -1px
 
-/* CENTER (MAP) */
-#center {
-    padding: 0;
-}
-#map-div {
-    width: 100%;
-    height: 100%;
-}
+    /* CENTER (MAP) */
+    .center-container
+        position absolute
+        top 75px
+        left $side-bar-width + (2 * $container-margin)
+        bottom $container-margin
+        right $container-margin
+        overflow hidden
+        [data-dojo-attach-point='mapDiv']
+            position absolute
+            top 0
+            bottom 0
+            left 0
+            right 0
+
 
 /* GENERAL STUFF */
 /* remove orange outline in chrome */
-*:focus {
-    outline: none;
-}
-/* close button in dijit.Dialog */
-.dijitDialogCloseIcon {
-    display: none;
-}
+*focus
+    outline none
