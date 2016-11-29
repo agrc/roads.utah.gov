@@ -1,36 +1,38 @@
-/*global dojo, console*/
-dojo.provide("plpco._GetSubLayersMixin");
-
-dojo.declare("plpco._GetSubLayersMixin", null,{
-    // summary:
-    //      Provides functionality for finding the matching county group layer and
-    //      returning the associated sub layer ids.
-    //      Used in RoadsToc and RoadsIdentify
-
-    // getSubLayersRoadsLayer: esri.layers.ArcGISDynamicMapServiceLayer
-    getSubLayersRoadsLayer: null,
-
-    getSubLayers: function(county){
+define([
+    'dojo/_base/declare'
+], function (
+    declare
+) {
+    return declare(null, {
         // summary:
-        //      description
-        console.info(this.declaredClass + "::" + arguments.callee.nom, arguments);
+        //      Provides functionality for finding the matching county group layer and
+        //      returning the associated sub layer ids.
+        //      Used in RoadsToc and RoadsIdentify
 
-        // find matching group layer and associated sub layers
-        var gLayerInfo;
-        dojo.some(this.getSubLayersRoadsLayer.layerInfos, function(info){
-            if (info.name.toLowerCase() === county.toLowerCase()) {
-                gLayerInfo = info;
-                return true;
-            } else {
+        // getSubLayersRoadsLayer: esri.layers.ArcGISDynamicMapServiceLayer
+        getSubLayersRoadsLayer: null,
+
+        getSubLayers: function (county) {
+            // summary:
+            //      description
+            console.log('app/_GetSubLayersMixin:getSubLayers', arguments);
+
+            // find matching group layer and associated sub layers
+            var gLayerInfo;
+            this.getSubLayersRoadsLayer.layerInfos.some(function (info) {
+                if (info.name.toLowerCase() === county.toLowerCase()) {
+                    gLayerInfo = info;
+
+                    return true;
+                }
+
                 return false;
-            }
-        }, this);
+            }, this);
 
-        if (!gLayerInfo) {
-            // throw new Error('No matching county found!');
+            if (gLayerInfo) {
+                return gLayerInfo.subLayerIds;
+            }
             // swallow
-        } else {
-            return gLayerInfo.subLayerIds;
         }
-    }
+    });
 });

@@ -1,17 +1,17 @@
-@import '../agrc/themes/standard/map/BaseMap.css';
-@import '../agrc/themes/standard/map/BaseMapSelector.css';
-@import '../plpco/css/SideBarToggler.css';
-@import '../ijit/themes/standard/layout/PaneStack.css';
-@import '../agrc/themes/standard/locate/MagicZoom.css';
-@import '../agrc/themes/standard/locate/TRSsearch.css';
-@import '../plpco/css/CountyZoomer.css';
-@import '../plpco/css/LayerToggler.css';
-@import '../plpco/css/Toc.css';
-@import '../plpco/css/RoadsToc.css';
-@import '../plpco/css/LogInDialog.css';
-@import '../plpco/css/UserMenu.css';
-@import '../plpco/css/Identify.css';
-@import '../plpco/css/AttributeTable.css';
+@import '../../agrc/resources/map/BaseMap.css';
+@import '../../agrc/resources/map/BaseMapSelector.css';
+@import 'SideBarToggler.css';
+@import '../../ijit/themes/standard/layout/PaneStack.css';
+@import '../../agrc/resources/locate/MagicZoom.css';
+@import '../../agrc/resources/locate/TRSsearch.css';
+@import 'CountyZoomer.css';
+@import 'LayerToggler.css';
+@import 'Toc.css';
+@import 'RoadsToc.css';
+@import 'LogInDialog.css';
+@import 'UserMenu.css';
+@import 'Identify.css';
+@import 'AttributeTable.css';
 
 body, html {
     width: 100%;
@@ -21,21 +21,9 @@ body, html {
     overflow: hidden;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-#main-container {
+.main-container {
     width: 100%;
     height: 100%;
-}
-#loading-overlay {
-    padding: 10px;
-    margin: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #EDEDED;
-    z-index: 800;
-    vertical-align: middle;
 }
 
 /* TITLE PANE */
@@ -47,14 +35,14 @@ body, html {
     font-weight: bold;
     float: left;
 }
-#version {
+.version {
     display: inline-block;
     margin: 15px 0 0 5px;
     color: gray;
     text-decoration: none;
     font-weight: bold;
 }
-#version:hover {
+.version:hover {
     text-decoration: underline !important;
 }
 
@@ -101,7 +89,7 @@ body, html {
 #legend .esriLegendServiceLabel {
     display: none;
 }
-#roads-identify-pane_pane {
+[data-dojo-attach-point='roadsIdentifyPane']_pane {
     padding: 0;
 }
 

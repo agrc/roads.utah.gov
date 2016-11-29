@@ -1,140 +1,107 @@
-/*global dojo, console, agrc, dijit, plpco*/
-// provide namespace
-dojo.provide("plpco.Toc");
+define([
+    'app/CheckBoxTree',
+    'app/LayerList',
+    'app/_CheckBoxTreeNode',
 
-dojo.require("agrc.widgets.layer.LayerList");
-dojo.require("dijit.form.CheckBox");
-dojo.require("agrc.widgets.layer._CheckboxTreeNode");
-dojo.require("agrc.widgets.layer.CheckBoxTree");
+    'dijit/form/CheckBox',
+    'dijit/tree/ForestStoreModel',
 
-dojo.declare("plpco.Toc", agrc.widgets.layer.LayerList, {
-	// summary:
-	//		Toc implementation to allow a root node on the tree.
-	
-	baseClass: "toc-widget",
-	
-	// Parameters to constructor
-	_buildLayerList: function () {
-		// summary:
-		//      overriden
-		// tags:
-		//      private
-		console.info(this.declaredClass + "::" + arguments.callee.nom, arguments);
+    'dojo/data/ItemFileWriteStore',
+    'dojo/topic',
+    'dojo/_base/declare',
+    'dojo/_base/lang'
+], function (
+    CheckBoxTree,
+    LayerList,
+    _CheckBoxTreeNode,
 
-		// if (!response) {
-			// this.errorFunc('Could not fetch layer list from service');
-			// return;
-		// }
-		
-		var data = {
-			identifier: "id",
-			label: "name",
-			items: []
-		};
-		
-		dojo.forEach(this.layer.layerInfos, function(info){
-		    if (dojo.indexOf(this.excludedLayerNodes, info.name) === -1){
-		        var visible = (dojo.indexOf(this.layer.visibleLayers, info.id) != -1);
-                var item = {
-                    name: info.name,
-                    id: info.id,
-                    children: null,
-                    defaultVisibility: info.defaultVisibility,
-                    visible: visible,
-                    parentLayerId: info.parentLayerId
-                };
-                if (item.parentLayerId === -1){
-                    data.items.push(item);
-                } 
-                // skip children of group layers
-                // else {
-                    // dojo.some(data.items, function(matchItem){
-                        // if (matchItem.id === item.parentLayerId){
-                            // if (matchItem.children === null){
-                                // matchItem.children = [];
-                            // }
-                            // matchItem.children.push(item);
-                            // return true;
-                        // } else {
-                            // return false;
-                        // }
-                    // }, this);
-                // }
-		    }
-		}, this);
-		
-		console.dir(data);
-		
-		this._store = new dojo.data.ItemFileWriteStore({
-			data: data
-		});
+    CheckBox,
+    ForestStoreModel,
 
-		this._store.fetch({
-			onItem: dojo.hitch(this, '_updateStoreWithActualValues'),
-			onComplete: dojo.hitch(this._store, 'save'),
-			queryOptions: {
-				deep: true
-			}
-		});
+    ItemFileWriteStore,
+    topic,
+    declare,
+    lang
+) {
+    return declare([LayerList], {
+        // summary:
+        //        Toc implementation to allow a root node on the tree.
 
-		var model = new dijit.tree.ForestStoreModel({
-			store: this._store,
-			labelAttr: "name",
-			childrenAttr: "children",
-			layoutAllign: "right",
-			deferItemLoadingUntilExpand: false,
-			rootLabel: this.rootName
-		});
+        baseClass: 'toc-widget',
 
-		dojo.mixin(model, {
-			mayHaveChildren: function (item) {
-				//TODO: use store to get children getValues
-				return !!(dojo.isArray(item.children) && !!item.children[0]) ? true : false;
-			}
-		});
-		
-		// this is the only change in this function. switched to use the uplan.CheckBoxTree class
-		var tree = new plpco.CheckBoxTree({
-			model: model,
-			persist: false,
-			showRoot: this.showRoot,
-			openOnClick: true,
-			id: this.id + "_tree",
-			mapServiceVisible: this.layer.visible
-		}, this._layerListNode);
+        // Parameters to constructor
+        _buildLayerList: function () {
+            // summary:
+            //      overriden
+            // tags:
+            //      private
+            console.log('app/Toc:_buildLayerList', arguments);
 
-		tree.startup();
+            var data = {
+                identifier: 'id',
+                label: 'name',
+                items: []
+            };
 
-		dojo.publish("agrc.widgets.layer._CheckboxTreeNode" + this.id + ".Changed");
-	}
-});
+            this.layer.layerInfos.forEach(function (info) {
+                if (this.excludedLayerNodes.indexOf(info.name) === -1) {
+                    var visible = (this.layer.visibleLayers.indexOf(info.id) !== -1);
+                    var item = {
+                        name: info.name,
+                        id: info.id,
+                        children: null,
+                        defaultVisibility: info.defaultVisibility,
+                        visible: visible,
+                        parentLayerId: info.parentLayerId
+                    };
+                    if (item.parentLayerId === -1) {
+                        data.items.push(item);
+                    }
+                }
+            }, this);
 
-dojo.declare("plpco._CheckBoxTreeNode", agrc.widgets.layer._CheckboxTreeNode, {
-	// summary:
-	//		Inherits from agrc widget. Changed to create a dijit checkbox instead of plain html
-	
-	postCreate: function () {
-		console.info(this.declaredClass + "::" + arguments.callee.nom, arguments);
-		
-		this.inherited(arguments);
-		
-		this.connect(this.contentNode, "onclick", function(evt){
-			// toggle checkbox
-			this._checkbox.set("checked", !this._checkbox.get("checked"));
-			this._onCheckBoxChange(this._checkbox);
-			dojo.stopEvent(evt);
-		});
-    }
-});
+            console.dir(data);
 
-dojo.declare("plpco.CheckBoxTree", agrc.widgets.layer.CheckBoxTree, {
-    _createTreeNode: function (args) {
-        console.info(this.declaredClass + "::" + arguments.callee.nom, arguments);
+            this._store = new ItemFileWriteStore({
+                data: data
+            });
 
-        args._store = this.model.store;
-        args._treeId = this.id;
-        args._mapServiceVisible = this.mapServiceVisible;
+            this._store.fetch({
+                onItem: lang.hitch(this, '_updateStoreWithActualValues'),
+                onComplete: lang.hitch(this._store, 'save'),
+                queryOptions: {
+                    deep: true
+                }
+            });
 
-        return new plpco._CheckBoxTreeNode(args);
-    }
+            var model = new ForestStoreModel({
+                store: this._store,
+                labelAttr: 'name',
+                childrenAttr: 'children',
+                layoutAllign: 'right',
+                deferItemLoadingUntilExpand: false,
+                rootLabel: this.rootName
+            });
+
+            lang.mixin(model, {
+                mayHaveChildren: function (item) {
+                    // TODO: use store to get children getValues
+                    return Array.isArray(item.children) && !!item.children[0];
+                }
+            });
+
+            // this is the only change in this function. switched to use the uplan.CheckBoxTree class
+            var tree = new CheckBoxTree({
+                model: model,
+                persist: false,
+                showRoot: this.showRoot,
+                openOnClick: true,
+                id: this.id + '_tree',
+                mapServiceVisible: this.layer.visible
+            }, this._layerListNode);
+            tree.startup();
+
+            topic.publish('_CheckboxTreeNode' + this.id + '.Changed');
+        }
+    });
 });

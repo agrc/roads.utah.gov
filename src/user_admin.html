@@ -2,184 +2,36 @@
 <html>
     <head>
         <title>PLPCO Roads Viewer User Admin</title>
-        
-        <!-- META TAGS -->
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-        <meta name="description" content="We should do some SEO" />
-        <meta name="keywords" content="Comma, Separated List"/>
-        <link rel="shortcut icon" href="content/images/favicon.png" type="image/png" />
-        <!-- disable zooming in ios -->
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-        
-        <!-- CSS -->
-        <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.6/js/dojo/dijit/themes/claro/claro.css">
-        <link rel='stylesheet' type='text/css' href='content/css/user_admin.css'/>
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <link rel="stylesheet" href="app/resources/UserAdmin.css">
 
         <!-- JAVASCRIPT -->
-        <script type="text/javascript">
-            var djConfig={
-                isDebug: true, // remove for build
-                debugAtAllCosts: true, // remove for build
-                baseUrl: "./", // remove for build
-                modulePaths: { // remove for build
-                    "agrc": "./content/agrc",
-                    "ijit": "./content/ijit",
-                    plpco: './content/plpco'
-                },
-                parseOnLoad: true
-            };
-            var plpcoglobal = {
-                appName: '/PLPCO'
-            };
-            plpcoglobal.fields = {
-                roads: {
-                    RD_ID: ['RD_ID', 'Road ID', 94], // 135 is width of attribute table column
-                    CO_UNIQUE: ['CO_UNIQUE', 'County Unique', 151],
-                    S_NAME: ['S_NAME', 'Road Name', 240],
-                    Miles: ['Miles', 'Miles', 100],
-                    CLASS: ['CLASS', 'Class', 75],
-                    VERIFIED76: ['VERIFIED76', 'Verified 76', 130],
-                    VERIFIED24: ['VERIFIED24K', 'Verified 24', 130],
-                    VERIFIED15: ['VERIFIED15MIN', 'Verified 15', 130],
-                    UDOT: ['UDOT', 'UDOT', 84],
-                    CoA_AREA: ['CoA_AREA', 'Cause of Action Area', 200],
-                    AFFIDAVITS: ['AFFIDAVITS', 'Affidavits', 120],
-                    REC_STATUS: ['REC_STATUS', 'Recordation Status', 180],
-                    COMMENTS: ['COMMENTS', 'Comments', 165],
-                    WITNESS1: ['WITNESS1', 'Witness 1', 150],
-                    WITNESS2: ['WITNESS2', 'Witness 2', 150],
-                    WITNESS3: ['WITNESS3', 'Witness 3', 150],
-                    BLM_LENGTH: ['BLM_LENGTH', 'BLM Length', 130],
-                    PROTECTION: ['PROTECTION', 'Protection', 115],
-                    NOTES: ['NOTES', 'Notes', 300],
-                    TITLE: ['TITLE_WRK', 'Title', 150],
-                    REQUEST: ['REQUEST', 'Request', 150]
-                },
-                counties: {
-                    NAME: 'NAME'
-                },
-                magicZoomsData: {
-                    ROAD_CLASS: 'ROAD_CLASS'
-                },
-                OBJECTID: 'OBJECTID',
-                photos: {
-                    HOTLINK: 'HOTLINK'
-                }
-            };
-            
-            plpcoglobal.urls = {
-                localBase: '/ArcGIS_PLPCO/rest/services/PLPCO/',
-                mapservBase: 'http://mapserv.utah.gov/ArcGIS/rest/services/',
-                photosBase: 'http://wddr.state.ut.us/'
-            };
-            plpcoglobal.urls.terrain = plpcoglobal.urls.mapservBase + 'UtahBaseMap-Terrain/MapServer';
-            plpcoglobal.urls.countyQueryTaskUrl = plpcoglobal.urls.terrain + '/2';
-            plpcoglobal.urls.plssUrl = plpcoglobal.urls.mapservBase + 'UtahPLSS/MapServer';
-            
-            plpcoglobal.urls.backgroundLayers = plpcoglobal.urls.localBase + 'BackgroundLayers/MapServer';
-            plpcoglobal.urls.magicZoomsData = plpcoglobal.urls.localBase + 'MagicZoomsData/MapServer';
-            plpcoglobal.urls.roadsUrl = plpcoglobal.urls.localBase + 'RoadsGeneral/MapServer';
-            plpcoglobal.urls.roadsLegend = plpcoglobal.urls.roadsUrl + '/legend';
-            plpcoglobal.urls.roadsSecureUrl = plpcoglobal.urls.localBase + 'RoadsSecure/MapServer';
-            plpcoglobal.urls.attributeTableUrl = plpcoglobal.urls.roadsSecureUrl + '//${0}';
-            plpcoglobal.urls.overlaysUrl = plpcoglobal.urls.localBase + 'Overlays/MapServer';
-            plpcoglobal.urls.overlaysNoToken = plpcoglobal.urls.overlaysUrl;
-            
-            plpcoglobal.urls.maskQueryTaskUrl = plpcoglobal.urls.overlaysUrl + '/1';
-            plpcoglobal.urls.createUser = '/UserManagement/Register/CreateNewUser';
-            plpcoglobal.urls.getAllWaiting = '/UserManagement/User/GetAllWaiting';
-            plpcoglobal.urls.reject = '/UserManagement/User/Reject';
-            plpcoglobal.urls.accept = '/UserManagement/User/Accept';
-            plpcoglobal.urls.reset = '/UserManagement/User/ResetPassword';
-            
-            
-            plpcoglobal.roleNames = {
-                plpcoAdmin: 'PLPCO_Admin',
-                plpcoSecure: 'PLPCO_Secure',
-                plpcoGeneral: 'PLPCO_General'
-            };
-            
-            plpcoglobal.counties = [
-                'Beaver',
-                'Box Elder',
-                'Carbon',
-                'Daggett',
-                'Duchesne',
-                'Emery',
-                'Garfield',
-                'Grand',
-                'Iron',
-                'Juab',
-                'Millard',
-                'Piute',
-                'Rich',
-                'San Juan',
-                'Sanpete',
-                'Sevier',
-                'Tooele',
-                'Uintah',
-                'Utah',
-                'Washington',
-                'Wayne'
-            ];
-        </script>
-        <script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.6"></script>
-        <!-- <script type="text/javascript" src="content/nls/PLPCORoadsViewerLyr_en-us.js"></script>
-        <script type="text/javascript" src="content/PLPCORoadsViewerLyr.js"></script> -->
-        <script type="text/javascript" src="content/js/user_admin.js"></script> <!-- remove this for build -->
-        
-        <!-- GOOGLE ANALYTICS -->
-        <script type="text/javascript">
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-11849964-39']);
-            _gaq.push(['_trackPageview']); (function() {
-                var ga = document.createElement('script');
-                ga.type = 'text/javascript';
-                ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0];
-                s.parentNode.insertBefore(ga, s);
-            })();
-        </script>
+        <!-- build:template
+        <script data-dojo-config="deps:['app/run']" src='dojo/dojo.js'></script>
+        /build -->
+
+        <!-- build:remove -->
+        <script data-dojo-config="isDebug: 1" src='dojo/dojo.js'></script>
+        <script src='app/run.js'></script>
+        <!-- /build -->
     </head>
-    <body class='claro'>
-        <div id='loading-overlay'>
-            <div>Loading Application...</div>
-        </div>
-        <div id='log-in'></div>
-        <div class="container">
-            <h2>PLPCO Roads Viewer User Admin</h2>
-            <div id='user-menu'></div>
-            <h3>Users awaiting approval:</h3>
-            <div id="queue">
-                <span id="loading-image">
-                    <img src="content/images/ajax-loader.gif" alt="loading image"> Loading...
-                </span>
-                <div id="none-msg" class="alert hidden">
-                    There are no users that are awaiting approval.
-                </div>
-            </div>
+    <body>
+        <div id="widget-div"></div>
 
-            <h3>Delete a user:</h3>
-            <div class="alert alert-error">
-                Email Address:
-                <input id="delete-email" type="email">
-                <button class="btn btn-danger" id="delete-btn">Delete</button>
-                <br>
-                <span id="delete-msg"></span>
-            </div>
-
-            <h3>Reset a user's password:</h3>
-            <div class='alert alert-info'>
-                Email Address:
-                <input id='reset-email' type='email'>
-                <button class='btn btn-info' id='reset-btn'>Reset</button>
-                <br>
-                <span id='reset-msg'></span>
-            </div>
-            <footer>
-                <?php include('content/common_html/footer.php')?>
-            </footer>
-        </div>
+        <script>
+            require([
+                'ijit/widgets/authentication/UserAdmin',
+                'app/config',
+                'dojo/domReady!'
+            ], function (UserAdmin, config) {
+                var ua = new UserAdmin({
+                    title: 'PLPCO Roads Viewer',
+                    appName: config.appName
+                }, 'widget-div');
+                ua.startup();
+            });
+        </script>
     </body>
 </html>

@@ -1,0 +1,44 @@
+<div>
+    <div data-dojo-attach-point='mainContainer' class='main-container' data-dojo-type='dijit/layout/BorderContainer'>
+        <div id='title-pane' data-dojo-type='dijit/layout/ContentPane' region='top'>
+            <span id='title'>PLPCO Roads Viewer</span>
+            <a data-dojo-attach-point='version' class='version' href='ChangeLog.html' target="_blank"></a>
+            <div id='user-menu'></div>
+        </div>
+        <div id='side-bar' data-dojo-type='dijit/layout/ContentPane' region='left'>
+            <div class='side-bar-sizer'>
+                <div class='padder'>
+                    <div class='county-container'>
+                        County: <span id='county-name'></span>
+                    </div>
+                    <button data-dojo-type='dijit/form/Button' data-dojo-attach-point='selectCounty'>Select County</button>
+                    <div class='clearer'></div>
+                </div>
+                <div id='pane-stack'>
+                    <div title='Search' open='true'>
+                        <div id='magic-zooms-container'></div>
+                        <div id='place-name-search'></div>
+                        <div id='city-search'></div>
+                    </div>
+                    <div data-dojo-attach-point='roadsIdentifyPane' title='Data for Selected Road'></div>
+                    <div title='Map Layers'>
+                        <div id='roads-layers-toc'></div>
+                        <h4>Background Layers</h4>
+                        <div id='plss-toggler'></div>
+                        <div id='overlays-toggler'></div>
+                        <div id='background-layers-toc'></div>
+                    </div>
+                    <div title='Legend'>
+                        <div id='legend'></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id='center' data-dojo-type='dijit/layout/ContentPane' region='center'>
+            <div id='sidebar-toggle'></div>
+            <div id='map-div'></div>
+        </div>
+    </div>
+    <div id='county-zoomer'></div>
+    <div id='log-in'></div>
+</div>
