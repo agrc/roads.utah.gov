@@ -8,7 +8,6 @@ define([
     'app/LayerToggler',
     'app/MagicZoom',
     'app/RoadsToc',
-    'app/SideBarToggler',
     'app/Toc',
 
     'dijit/_TemplatedMixin',
@@ -27,6 +26,7 @@ define([
     'esri/layers/ImageParameters',
 
     'ijit/widgets/layout/PaneStack',
+    'ijit/widgets/layout/SideBarToggler',
 
     'dojo/domReady!'
 ], function (
@@ -39,7 +39,6 @@ define([
     LayerToggler,
     MagicZoom,
     RoadsToc,
-    SideBarToggler,
     Toc,
 
     _TemplatedMixin,
@@ -57,7 +56,8 @@ define([
     ArcGISTiledMapServiceLayer,
     ImageParameters,
 
-    PaneStack
+    PaneStack,
+    SideBarToggler
 ) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
         baseClass: 'app',
@@ -121,11 +121,10 @@ define([
             this.initMap();
 
             var sb = new SideBarToggler({
-                sidebar: dom.byId('side-bar'),
-                mainContainer: this.mainContainer,
+                sidebar: this.sideBar,
                 map: this.map,
-                centerContainer: dom.byId('center')
-            }, 'sidebar-toggle');
+                centerContainer: this.centerContainer
+            }, this.sidebarToggle);
             sb.startup();
 
             if (role !== config.roleNames.plpcoGeneral) {
@@ -138,11 +137,9 @@ define([
             //      description
             console.log('app/App:initMap', arguments);
 
-            this.identify = new Identify({
-                roadsPane: this.roadsIdentifyPane
-            });
+            this.identify = new Identify();
 
-            this.map = new BaseMap('map-div', {
+            this.map = new BaseMap(this.mapDiv, {
                 useDefaultBaseMap: false,
                 infoWindow: this.identify.getPopup()
             });
