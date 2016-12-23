@@ -1,6 +1,5 @@
 define([
     'agrc/widgets/map/BaseMap',
-    'agrc/widgets/map/BaseMapSelector',
 
     'app/config',
     'app/CountyZoomer',
@@ -21,6 +20,7 @@ define([
     'dojo/_base/lang',
 
     'esri/dijit/Legend',
+    'esri/geometry/Extent',
     'esri/layers/ArcGISDynamicMapServiceLayer',
     'esri/layers/ArcGISTiledMapServiceLayer',
     'esri/layers/ImageParameters',
@@ -28,10 +28,11 @@ define([
     'ijit/widgets/layout/PaneStack',
     'ijit/widgets/layout/SideBarToggler',
 
+    'layer-selector/LayerSelector',
+
     'dojo/domReady!'
 ], function (
     BaseMap,
-    BaseMapSelector,
 
     config,
     CountyZoomer,
@@ -52,12 +53,15 @@ define([
     lang,
 
     Legend,
+    Extent,
     ArcGISDynamicMapServiceLayer,
     ArcGISTiledMapServiceLayer,
     ImageParameters,
 
     PaneStack,
-    SideBarToggler
+    SideBarToggler,
+
+    LayerSelector
 ) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
         baseClass: 'app',
@@ -141,13 +145,22 @@ define([
 
             this.map = new BaseMap(this.mapDiv, {
                 useDefaultBaseMap: false,
-                infoWindow: this.identify.getPopup()
+                infoWindow: this.identify.getPopup(),
+                extent: new Extent({
+                    xmax: -11762120.612131765,
+                    xmin: -13074391.513731329,
+                    ymax: 5225035.106177688,
+                    ymin: 4373832.359194187,
+                    spatialReference: {
+                        wkid: 3857
+                    }
+                })
             });
 
-            var selector = new BaseMapSelector({
+            var selector = new LayerSelector({
                 map: this.map,
-                id: 'claro',
-                defaultThemeLabel: 'Lite'
+                quadWord: config.quadWord,
+                baseLayers: ['Lite', 'Hybrid', 'Terrain', 'Topo']
             });
             selector.startup();
 
