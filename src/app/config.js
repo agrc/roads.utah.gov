@@ -17,13 +17,11 @@ define([
     esriConfig.defaults.io.corsEnabledServers.push('api.mapserv.utah.gov');
     esriConfig.defaults.io.corsEnabledServers.push('discover.utah.gov');
 
-    var localBase = '/ArcGIS_PLPCO/rest/services/PLPCO/';
-    var mapservBase = 'http://mapserv.utah.gov/ArcGIS/rest/services/';
-    var terrain = mapservBase + 'BaseMaps/Hillshade/MapServer';
+    var localBase = '/arcgis/rest/services/PLPCO/';
     var roadsUrl = localBase + 'RoadsGeneral/MapServer';
     var roadsSecureUrl = localBase + 'RoadsSecure/MapServer';
-    var overlaysUrl = localBase + 'Overlays/MapServer';
     var fldREQUEST = 'REQUEST';
+    var backgroundLayers = localBase + 'BackgroundLayers/MapServer';
 
     window.AGRC = {
         // version.: String
@@ -90,7 +88,7 @@ define([
             counties: {
                 NAME: 'NAME'
             },
-            magicZoomsData: {
+            sherlockData: {
                 ROAD_CLASS: 'ROAD_CLASS'
             },
             OBJECTID: 'OBJECTID',
@@ -102,21 +100,15 @@ define([
 
         urls: {
             photosBase: 'http://roads.utah.gov/wddr/',
-            terrain: terrain,
-            countyQueryTaskUrl: terrain + '/2',
-            plssUrl: mapservBase + 'UtahPLSS/MapServer',
 
-            backgroundLayers: localBase + 'BackgroundLayers/MapServer',
-            magicZoomsData: localBase + 'MagicZoomsData/MapServer',
+            backgroundLayers: backgroundLayers,
+            sherlockData: localBase + 'SherlockData/MapServer',
             roadsUrl: roadsUrl,
             roadsLegend: roadsUrl + '/legend',
             roadsSecureUrl: roadsSecureUrl,
             attributeTableUrl: roadsSecureUrl + '//${0}',
-            overlaysUrl: overlaysUrl,
-            overlaysNoToken: overlaysUrl,
 
-            maskQueryTaskUrl: overlaysUrl + '/1',
-            createUser: '/UserManagement/Register/CreateNewUser'
+            maskQueryTaskUrl: backgroundLayers + '/1'
         },
 
         roleNames: {
