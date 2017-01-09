@@ -160,57 +160,17 @@ define([
             var selector = new LayerSelector({
                 map: this.map,
                 quadWord: config.quadWord,
-                baseLayers: ['Lite', 'Hybrid', 'Terrain', 'Topo']
+                baseLayers: ['Lite', 'Hybrid', 'Terrain', 'Topo'],
+                overlays: [{
+                    id: 'Land Ownership',
+                    Factory: ArcGISDynamicMapServiceLayer,
+                    url: config.urls.backgroundLayers,
+                    opacity: 0.6
+                }]
             });
             selector.startup();
 
             var lyrs = [];
-
-            // Background Layers
-            var imageParams = new ImageParameters();
-            imageParams.format = 'PNG24';
-            this.backgroundLyrsLyr = new ArcGISDynamicMapServiceLayer(config.urls.backgroundLayers, {
-                imageParameters: imageParams
-            });
-            lyrs.push(this.backgroundLyrsLyr);
-            this.map.addLoaderToLayer(this.backgroundLyrsLyr);
-            var that = this;
-            this.connect(this.backgroundLyrsLyr, 'onLoad', function () {
-                var tocParams = { layer: that.backgroundLyrsLyr };
-                if (that.lDialog.role === config.roleNames.plpcoGeneral) {
-                    tocParams.excludedLayerNodes = config.excludedLayerNodes;
-                    tocParams.includedLayerNodes = config.includedLayerNodes;
-                }
-                var btoc = new Toc(tocParams, 'background-layers-toc');
-                // refresh legend on each change in toc
-                this.connect(btoc, '_refreshLayerVisibilty', function () {
-                    that.leg.refresh();
-                });
-            });
-
-            // overlays
-            this.overlaysLyr = new ArcGISDynamicMapServiceLayer(config.urls.overlaysUrl, {
-                opacity: 0.5
-            });
-            lyrs.push(this.overlaysLyr);
-            this.map.addLoaderToLayer(this.overlaysLyr);
-            var overlayTgl = new LayerToggler({
-                layer: this.overlaysLyr,
-                name: 'Land Ownership'
-            }, 'overlays-toggler');
-            overlayTgl.startup();
-
-            // PLSS
-            var plssLyr = new ArcGISTiledMapServiceLayer(config.urls.plssUrl, {
-                visible: false
-            });
-            lyrs.push(plssLyr);
-            this.map.addLoaderToLayer(plssLyr);
-            var plssTgl = new LayerToggler({
-                layer: plssLyr,
-                name: 'Township/Range/Sections'
-            }, 'plss-toggler');
-            plssTgl.startup();
 
             // Roads
             var roadsLyr = new ArcGISDynamicMapServiceLayer(config.urls.roadsUrl, {
@@ -222,7 +182,7 @@ define([
             this.identify.toc = this.roadsToc;
 
             this.map.addLayers(lyrs);
-            this.connect(this.map, 'onLayersAddResult', this, 'afterMapLoaded');
+            this.map.on('layers-add-result', lang.hitch(this, 'afterMapLoaded'));
 
             // city search
             var muni = new MagicZoom({
@@ -264,11 +224,7 @@ define([
                 map: this.map,
                 layerInfos: [
                     {
-                        layer: this.overlaysLyr,
-                        title: ''
-                    },
-                    {
-                        layer: this.backgroundLyrsLyr,
+                        layer: new ArcGISDynamicMapServiceLayer(config.urls.backgroundLayers),
                         title: ''
                     }
                 ]

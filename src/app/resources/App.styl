@@ -25,7 +25,6 @@ body, html, .app
     .container-with-border
         border 1px solid #b5bcc7
 
-/* TITLE PANE */
     .title-container
         position absolute
         top $container-margin
@@ -50,7 +49,6 @@ body, html, .app
             top -3px
             right 0
 
-    /* SIDE BAR */
     .side-bar-container
         width $side-bar-width
         overflow-y auto
@@ -68,7 +66,6 @@ body, html, .app
         width $side-bar-width
         margin -1px
 
-    /* CENTER (MAP) */
     .center-container
         position absolute
         top 75px
@@ -82,6 +79,10 @@ body, html, .app
             bottom 0
             left 0
             right 0
+
+            .layer-selector label.layer-selector-items {
+                max-width 140px
+            }
 
 
 /* GENERAL STUFF */
