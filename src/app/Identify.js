@@ -102,7 +102,7 @@ define([
         photosTemplate: null,
 
         // roadsPanePlaceHolderText: String
-        roadsPanePlaceHolderText: '<div>Please click on a road to see its attributes.</div>',
+        roadsPanePlaceHolderText: '<p>Please click on a road or photo to see its attributes.</p>',
 
         // roadsPane: esri.TitlePane
         roadsPane: null,
@@ -219,18 +219,13 @@ define([
             this.gLayer.clear();
             config.app.map.showLoader();
 
-            // var lyrIds = [];
-            // lyrIds.push(this.toc.subLayerIds[0]);
-            // lyrIds.push(this.toc.subLayerIds[2]);
             var lyrIds = this.toc.layer.visibleLayers;
-            if (!this.toc.photoLayerIds || config.app.map.getLevel() <= 7) {
+            if (config.app.map.getLevel() < 12) {
                 // remove photo layers we are zoomed too far out
-                this.toc.photoLayerIds.forEach(function (id) {
-                    var i = lyrIds.indexOf(id);
-                    if (i !== -1) {
-                        lyrIds.splice(i, 1);
-                    }
-                });
+                var i = lyrIds.indexOf(0);
+                if (i !== -1) {
+                    lyrIds.splice(i, 1);
+                }
             }
             this.iParams.layerIds = lyrIds;
             this.iParams.width = config.app.map.width;
@@ -249,7 +244,7 @@ define([
 
             config.app.map.hideLoader();
         },
-        onIdentifyTaskComplete: function (iResults) {
+        onIdentifyTaskComplete: function (response) {
             // summary:
             //      displays graphic on map and fires query task if appropriate
             // iResults: IdentifyResult[]
@@ -257,6 +252,7 @@ define([
 
             this.roadsPane.set('content', this.roadsPanePlaceHolderText);
 
+            var iResults = response.results;
             if (iResults.length > 0) {
                 // give preference to photos
                 var pointGraphic;
@@ -313,17 +309,18 @@ define([
             var rdId = config.fields.roads.RD_ID[0];
             this.query.where = rdId + " = '" + g.attributes[rdId] + "'";
 
-            if (!lName.indexOf('Class B') === -1) {
+            if (lName === 'Class B') {
                 this.qTaskB.execute(this.query);
             } else {
                 this.qTaskD.execute(this.query);
             }
         },
-        onQueryTaskComplete: function (fSet) {
+        onQueryTaskComplete: function (result) {
             // summary:
             //      description
             console.log('app/Identify:onQueryTaskComplete', arguments);
 
+            var fSet = result.featureSet;
             if (fSet.features.length === 0) {
                 throw new Error('No matching road sections found! ' + this.query.where);
             } else {

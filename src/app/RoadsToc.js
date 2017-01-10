@@ -143,7 +143,7 @@ define([
                 visibleLayers.push(this.subLayerIds[0]);
             }
             if (this.dCheckbox.checked) {
-                visibleLayers.push(this.subLayerIds[2]);
+                visibleLayers.push(this.subLayerIds[1]);
             }
             if (this.photoCheckbox.checked) {
                 visibleLayers.push(0);

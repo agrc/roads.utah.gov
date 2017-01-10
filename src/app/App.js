@@ -244,7 +244,7 @@ define([
                 that.lDialog.clearCookies();
                 location.reload();
             });
-            this.connect(this.map, 'onClick', this.identify, 'onMapClick');
+            this.map.on('click', lang.hitch(this.identify, 'onMapClick'));
         },
         onZoomToCounty: function (county) {
             // summary:
