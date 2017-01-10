@@ -120,7 +120,7 @@ define([
             this.county = county;
 
             // get roads ids
-            this.subLayerIds = subLayerIds.slice(-3);
+            this.subLayerIds = subLayerIds;
 
             this.refreshVisibility();
 

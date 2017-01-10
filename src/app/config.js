@@ -74,7 +74,6 @@ define([
                 CoA_AREA: ['CoA_AREA', 'Cause of Action Area', 200],
                 /* eslint-enable camelcase */
                 AFFIDAVITS: ['AFFIDAVITS', 'Affidavits', 120],
-                REC_STATUS: ['REC_STATUS', 'Recordation Status', 180],
                 COMMENTS: ['COMMENTS', 'Comments', 165],
                 WITNESS1: ['WITNESS1', 'Witness 1', 150],
                 WITNESS2: ['WITNESS2', 'Witness 2', 150],

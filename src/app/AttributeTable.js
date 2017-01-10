@@ -12,6 +12,7 @@ define([
     'dojo/text!app/html/AttributeTableDialogContent.html',
     'dojo/_base/Color',
     'dojo/_base/declare',
+    'dojo/_base/lang',
 
     'dojox/grid/DataGrid',
 
@@ -32,6 +33,7 @@ define([
     attributeTableDialogContent,
     Color,
     declare,
+    lang,
 
     DataGrid,
 
@@ -105,8 +107,8 @@ define([
             console.log('app/AttributeTable:executeQueryTask', arguments);
 
             var task = new QueryTask(this.url);
-            this.connect(task, 'onComplete', this, 'onTaskComplete');
-            this.connect(task, 'onError', this, 'onQueryTaskError');
+            task.on('complete', lang.hitch(this, 'onTaskComplete'));
+            task.on('error', lang.hitch(this, 'onQueryTaskError'));
 
             var query = new Query();
             query.returnGeometry = false;
@@ -134,7 +136,7 @@ define([
                 content: dojoString.substitute(attributeTableDialogContent, [id, btnId]),
                 class: 'attribute-table-dialog'
             });
-            this.connect(registry.byId(btnId), 'onClick', this, 'onZoomClick');
+            registry.byId(btnId).on('click', lang.hitch(this, 'onZoomClick'));
             this.dialog.show();
 
             // create grid
@@ -172,11 +174,12 @@ define([
             }, id);
             this.grid.startup();
         },
-        onTaskComplete: function (fSet) {
+        onTaskComplete: function (result) {
             // summary:
             //      updates the data store for the grid
             console.log('app/AttributeTable:onTaskComplete', arguments);
 
+            var fSet = result.featureSet;
             var rows = fSet.features.map(function (f) {
                 return f.attributes;
             });
@@ -223,11 +226,12 @@ define([
             this.query.where = config.fields.roads.RD_ID[0] + " = '" + rdid + "'";
             this.qTask.execute(this.query);
         },
-        onQueryTaskComplete: function (fSet) {
+        onQueryTaskComplete: function (result) {
             // summary:
             //      Callback for query task to zoom to road
             console.log('app/AttributeTable:onQueryTaskComplete', arguments);
 
+            var fSet = result.featureSet;
             if (fSet.features.length > 0) {
                 var map = config.app.map;
                 map.graphics.clear();
