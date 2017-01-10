@@ -42,8 +42,8 @@ define([
 
             this.qTask = new QueryTask(url);
 
-            this.connect(this.qTask, 'onComplete', this, 'onQueryTaskComplete');
-            this.connect(this.qTask, 'onError', this, 'onQueryTaskError');
+            this.qTask.on('complete', lang.hitch(this, 'onQueryTaskComplete'));
+            this.qTask.on('error', lang.hitch(this, 'onQueryTaskError'));
         },
         onQueryTaskComplete: function () {
             // summary:

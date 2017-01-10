@@ -4,9 +4,7 @@ define([
     'app/config',
     'app/CountyZoomer',
     'app/Identify',
-    'app/LayerToggler',
     'app/RoadsToc',
-    'app/Toc',
 
     'dijit/_TemplatedMixin',
     'dijit/_WidgetBase',
@@ -41,9 +39,7 @@ define([
     config,
     CountyZoomer,
     Identify,
-    LayerToggler,
     RoadsToc,
-    Toc,
 
     _TemplatedMixin,
     _WidgetBase,
