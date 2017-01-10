@@ -22,6 +22,7 @@ define([
     'esri/layers/ArcGISDynamicMapServiceLayer',
     'esri/layers/ArcGISTiledMapServiceLayer',
     'esri/layers/ImageParameters',
+    'esri/layers/WebTiledLayer',
 
     'ijit/widgets/layout/PaneStack',
     'ijit/widgets/layout/SideBarToggler',
@@ -57,6 +58,7 @@ define([
     ArcGISDynamicMapServiceLayer,
     ArcGISTiledMapServiceLayer,
     ImageParameters,
+    WebTiledLayer,
 
     PaneStack,
     SideBarToggler,
@@ -164,7 +166,12 @@ define([
             var selector = new LayerSelector({
                 map: this.map,
                 quadWord: config.quadWord,
-                baseLayers: ['Lite', 'Hybrid', 'Terrain', 'Topo'],
+                baseLayers: [{
+                    Factory: WebTiledLayer,
+                    url: LayerSelector.prototype._applianceLayers.Lite.urlPattern.replace('{quad}', config.quadWord),
+                    id: 'Lite',
+                    linked: ['Land Ownership']
+                }, 'Hybrid', 'Terrain', 'Topo'],
                 overlays: [{
                     id: 'Land Ownership',
                     Factory: ArcGISDynamicMapServiceLayer,
