@@ -96,16 +96,19 @@ define([
             }
         },
         urls: {
+            /* eslint-disable max-len */
             photosBase: 'http://roads.utah.gov/wddr/',
 
             backgroundLayers: backgroundLayers,
+            landOwnership: 'https://tlamap.trustlands.utah.gov/arcgis/rest/services/SpecialProject/UT_SITLA_LandOwnership_WM/MapServer',
             sherlockData: localBase + 'SherlockData/MapServer',
             roadsUrl: roadsUrl,
             roadsLegend: roadsUrl + '/legend',
             // roadsSecureUrl: roadsSecureUrl,
             attributeTableUrl: roadsUrl + '/${0}',
 
-            maskQueryTaskUrl: backgroundLayers + '/1'
+            maskQueryTaskUrl: backgroundLayers + '/0'
+            /* eslint-enable max-len */
         },
         roleNames: {
             plpcoAdmin: 'PLPCO_Admin',

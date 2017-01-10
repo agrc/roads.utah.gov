@@ -43,10 +43,9 @@ class PLPCOPallet(Pallet):
         self.staging = r'C:\Scheduled\staging'
         self.plpco_sde = join(self.garage, 'PLPCO.sde')
         self.plpco = join(self.staging, 'plpco.gdb')
-        self.cadastre = join(self.staging, 'cadastre.gdb')
         self.sgid = join(self.garage, 'SGID10.sde')
 
-        self.copy_data = [self.plpco, self.cadastre]
+        self.copy_data = [self.plpco]
 
         self.arcgis_services = [('PLPCO/BackgroundLayers', 'MapServer'),
                                 ('PLPCO/RoadsGeneral', 'MapServer'),
@@ -57,7 +56,6 @@ class PLPCOPallet(Pallet):
         self.log.info('adding crates')
         self.add_crates(datasets, {'source_workspace': self.plpco_sde, 'destination_workspace': self.plpco})
         self.add_crate(('Litigation_RoadPhotos', self.plpco_sde, self.plpco))
-        self.add_crate(('LandOwnership', self.sgid, self.cadastre))
 
     def is_ready_to_ship(self):
         return True

@@ -175,7 +175,7 @@ define([
                 overlays: [{
                     id: 'Land Ownership',
                     Factory: ArcGISDynamicMapServiceLayer,
-                    url: config.urls.backgroundLayers,
+                    url: config.urls.landOwnership,
                     opacity: 0.6
                 }]
             });
@@ -226,7 +226,7 @@ define([
                 map: this.map,
                 layerInfos: [
                     {
-                        layer: new ArcGISDynamicMapServiceLayer(config.urls.backgroundLayers),
+                        layer: new ArcGISDynamicMapServiceLayer(config.urls.landOwnership),
                         title: ''
                     }
                 ]
