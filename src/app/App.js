@@ -137,7 +137,7 @@ define([
 
             if (role !== config.roleNames.plpcoGeneral) {
                 // get secure layer for identify and attribute table to use
-                config.secureLayer = new ArcGISDynamicMapServiceLayer(config.urls.roadsSecureUrl);
+                config.secureLayer = new ArcGISDynamicMapServiceLayer(config.urls.roadsUrl);
             }
         },
         initMap: function () {

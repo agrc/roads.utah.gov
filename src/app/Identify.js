@@ -165,7 +165,7 @@ define([
             console.log('app/Identify:selectCounty', arguments);
 
             function addLayerIdToUrl(id) {
-                return config.urls.roadsSecureUrl.replace('MapServer', 'MapServer/' + id);
+                return config.urls.roadsUrl.replace('MapServer', 'MapServer/' + id);
             }
 
             if (this.isSecuredRole()) {

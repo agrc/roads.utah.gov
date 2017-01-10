@@ -19,7 +19,7 @@ define([
 
     var localBase = '/arcgis/rest/services/PLPCO/';
     var roadsUrl = localBase + 'RoadsGeneral/MapServer';
-    var roadsSecureUrl = localBase + 'RoadsSecure/MapServer';
+    // var roadsSecureUrl = localBase + 'RoadsSecure/MapServer';
     var fldREQUEST = 'REQUEST';
     var backgroundLayers = localBase + 'BackgroundLayers/MapServer';
 
@@ -103,8 +103,8 @@ define([
             sherlockData: localBase + 'SherlockData/MapServer',
             roadsUrl: roadsUrl,
             roadsLegend: roadsUrl + '/legend',
-            roadsSecureUrl: roadsSecureUrl,
-            attributeTableUrl: roadsSecureUrl + '//${0}',
+            // roadsSecureUrl: roadsSecureUrl,
+            attributeTableUrl: roadsUrl + '/${0}',
 
             maskQueryTaskUrl: backgroundLayers + '/1'
         },
