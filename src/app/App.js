@@ -250,8 +250,7 @@ define([
 
             this.countyName.innerHTML = county;
 
-            // TODO:
-            // this.roadsToc.selectCounty(county);
+            this.roadsToc.selectCounty(county);
             this.initSherlocks(county);
             this.identify.selectCounty(county);
         },
@@ -267,10 +266,7 @@ define([
         initSherlocks: function (county) {
             // summary:
             //      description
-            // indB: Number
-            //      The index of the B layer
-            // indD: Number
-            //      The index of the D layer
+            // county: string
             console.log('app/App:initSherlocks', arguments);
 
             var that = this;

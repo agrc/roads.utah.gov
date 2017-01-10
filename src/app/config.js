@@ -96,8 +96,6 @@ define([
                 HOTLINK: 'HOTLINK'
             }
         },
-        requestDefQuery: fldREQUEST + " IN ('YES', 'Yes')",
-
         urls: {
             photosBase: 'http://roads.utah.gov/wddr/',
 
@@ -110,13 +108,11 @@ define([
 
             maskQueryTaskUrl: backgroundLayers + '/1'
         },
-
         roleNames: {
             plpcoAdmin: 'PLPCO_Admin',
             plpcoSecure: 'PLPCO_Secure',
             plpcoGeneral: 'PLPCO_General'
         },
-
         counties: [
             'Beaver',
             'Box Elder',
@@ -141,7 +137,6 @@ define([
             'Wayne',
             'Kane'
         ],
-
         featureClassNames: {
             counties: 'SGID10.Boundaries.Counties',
             cities: 'SGID10.BOUNDARIES.Municipalities_Carto',

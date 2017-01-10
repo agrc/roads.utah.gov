@@ -1,29 +1,26 @@
 <div>
-    <h4>Roads</h4>
-    <label data-dojo-attach-point='photoContainer'>
-        <input data-dojo-attach-point='photoCheckbox' type='checkbox' data-dojo-type='dijit/form/CheckBox' checked>
-        <span>Photos</span><img data-dojo-attach-point='legendPhotos'/>
-    </label><br>
-    <label>
-        <input data-dojo-attach-point='bCheckbox' type='checkbox' data-dojo-type='dijit/form/CheckBox' checked>
-        <span>Class B</span><img data-dojo-attach-point='legendB'/>
-        <span class='open-table-container'>
-            (<span data-dojo-attach-point='openTableB' class='open-table'>open table</span>)
-        </span>
-    </label><br>
-    <label>
-        <input data-dojo-attach-point='dCheckbox' type='checkbox' data-dojo-type='dijit/form/CheckBox' checked>
-        <span>Class D</span><img data-dojo-attach-point='legendD'/>
-        <span class='open-table-container'>
-            (<span data-dojo-attach-point='openTableD' class='open-table'>open table</span>)
-        </span>
-    </label><br>
-    <label>
-        <input data-dojo-attach-point='dDissolvedCheckbox' type='checkbox' data-dojo-type='dijit/form/CheckBox'>
-        <span>Class D Queries</span><img data-dojo-attach-point='legendDQueries'>
-    </label>
-    <select data-dojo-attach-point='querySelect'>
-        <option value='0'>less than 1/2 mile</option>
-        <option value='1'>less than 1 mile</option>
-    </select>
+    <div class="checkbox">
+        <label data-dojo-attach-point='photoContainer'>
+            <input data-dojo-attach-point='photoCheckbox' type='checkbox' checked>
+            <span>Photos</span><img data-dojo-attach-point='legendPhotos'/>
+        </label>
+    </div>
+    <div class="checkbox">
+        <label>
+            <input data-dojo-attach-point='bCheckbox' type='checkbox' checked>
+            <span>Class B</span><img data-dojo-attach-point='legendB'/>
+            <button class='btn btn-info btn-xs'
+                data-dojo-attach-point='openTableB'
+                data-dojo-attach-event='click: onOpenTableClick'>open table</button>
+        </label>
+    </div>
+    <div class="checkbox">
+        <label>
+            <input data-dojo-attach-point='dCheckbox' type='checkbox' checked>
+            <span>Class D</span><img data-dojo-attach-point='legendD'/>
+            <button class='btn btn-info btn-xs'
+                data-dojo-attach-point='openTableD'
+                data-dojo-attach-event='click: onOpenTableClick'>open table</button>
+        </label>
+    </div>
 </div>

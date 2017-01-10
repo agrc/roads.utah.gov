@@ -3,7 +3,6 @@ define([
     'app/config',
     'app/_GetSubLayersMixin',
 
-    'dijit/form/CheckBox',
     'dijit/form/Select',
     'dijit/_TemplatedMixin',
     'dijit/_WidgetBase',
@@ -12,14 +11,12 @@ define([
     'dojo/query',
     'dojo/request/xhr',
     'dojo/text!app/templates/RoadsToc.html',
-    'dojo/_base/declare',
-    'dojo/_base/lang'
+    'dojo/_base/declare'
 ], function (
     AttributeTable,
     config,
     _GetSubLayersMixin,
 
-    CheckBox,
     Select,
     _TemplatedMixin,
     _WidgetBase,
@@ -28,8 +25,7 @@ define([
     query,
     xhr,
     template,
-    declare,
-    lang
+    declare
 ) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, _GetSubLayersMixin], {
         widgetsInTemplate: true,
@@ -45,12 +41,6 @@ define([
         // photoLayerIds: Number[]
         //      An array of id's of the photo layers, if any.
         photoLayerIds: null,
-
-        // lengthQueries: {}
-        lengthQueries: {
-            0: '"' + config.fields.roads.Miles[0] + '" < .5',
-            1: '"' + config.fields.roads.Miles[0] + '" < 1'
-        },
 
         // bTable: plpco.AttributeTable
         bTable: null,
@@ -92,10 +82,7 @@ define([
 
             this.connect(this.bCheckbox, 'onClick', this.refreshVisibility);
             this.connect(this.dCheckbox, 'onClick', this.refreshVisibility);
-            this.connect(this.dDissolvedCheckbox, 'onClick', this.refreshVisibility);
-            this.connect(this.querySelect, 'onchange', this.changeQuery);
             this.connect(this.photoCheckbox, 'onClick', this.refreshVisibility);
-            query('.roads-toc .open-table').onclick(lang.hitch(this, this.onOpenTableClick));
         },
         setLegend: function () {
             // summary:
@@ -114,8 +101,6 @@ define([
                 that.legendB.src = 'data:image/png;base64,' + b;
                 var d = data.layers[3].legend[0].imageData;
                 that.legendD.src = 'data:image/png;base64,' + d;
-                var queries = data.layers[2].legend[0].imageData;
-                that.legendDQueries.src = 'data:image/png;base64,' + queries;
                 var photos = data.layers[0].legend[0].imageData;
                 that.legendPhotos.src = 'data:image/png;base64,' + photos;
             });
@@ -139,15 +124,6 @@ define([
 
             this.refreshVisibility();
 
-            // set layer definitions if general role
-            if (config.app.lDialog.role === config.roleNames.plpcoGeneral) {
-                var layerDefs = [];
-                this.subLayerIds.forEach(function (id) {
-                    layerDefs[id] = config.requestDefQuery;
-                });
-                this.layer.setLayerDefinitions(layerDefs);
-            }
-
             if (this.bTable) {
                 this.bTable.destroy();
                 this.bTable = null;
@@ -163,16 +139,13 @@ define([
             console.log('app/RoadsToc:refreshVisibility', arguments);
 
             var visibleLayers = [];
-            if (this.bCheckbox.get('checked')) {
+            if (this.bCheckbox.checked) {
                 visibleLayers.push(this.subLayerIds[0]);
             }
-            if (this.dCheckbox.get('checked')) {
+            if (this.dCheckbox.checked) {
                 visibleLayers.push(this.subLayerIds[2]);
             }
-            if (this.dDissolvedCheckbox.get('checked')) {
-                visibleLayers.push(this.subLayerIds[1]);
-            }
-            if (this.photoCheckbox.get('checked')) {
+            if (this.photoCheckbox.checked) {
                 visibleLayers.push(0);
             }
             if (visibleLayers.length === 0) {
@@ -185,17 +158,6 @@ define([
                 this.layer.show();
             }
             this.layer.setVisibleLayers(visibleLayers);
-            this.changeQuery();
-        },
-        changeQuery: function () {
-            // summary:
-            //      description
-            console.log('app/RoadsToc:changeQuery', arguments);
-
-            var defs = this.layer.layerDefinitions || [];
-            defs[this.subLayerIds[1]] = this.lengthQueries[this.querySelect.value];
-
-            this.layer.setLayerDefinitions(defs);
         },
         onOpenTableClick: function (evt) {
             // summary:
