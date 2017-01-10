@@ -140,7 +140,11 @@ define([
             'Washington',
             'Wayne',
             'Kane'
-        ]
+        ],
+
+        featureClassNames: {
+            counties: 'SGID10.Boundaries.Counties'
+        }
     };
 
     if (has('agrc-build') === 'prod') {

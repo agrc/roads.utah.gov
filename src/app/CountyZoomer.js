@@ -1,54 +1,56 @@
 define([
+    'agrc/modules/WebAPI',
+
     'app/config',
 
-    'dijit/Dialog',
     'dijit/_TemplatedMixin',
     'dijit/_WidgetBase',
     'dijit/_WidgetsInTemplateMixin',
 
+    'dojo/dom-construct',
+    'dojo/Evented',
+    'dojo/on',
     'dojo/query',
     'dojo/text!app/templates/CountyZoomer.html',
-    'dojo/_base/Color',
     'dojo/_base/declare',
+    'dojo/_base/lang',
 
+    'esri/Color',
+    'esri/geometry/Polygon',
     'esri/layers/GraphicsLayer',
     'esri/symbols/SimpleFillSymbol',
     'esri/tasks/query',
-    'esri/tasks/QueryTask'
+    'esri/tasks/QueryTask',
+
+    'bootstrap'
 ], function (
+    WebAPI,
+
     config,
 
-    Dialog,
     _TemplatedMixin,
     _WidgetBase,
     _WidgetsInTemplateMixin,
 
+    domConstruct,
+    Evented,
+    on,
     query,
     template,
-    Color,
     declare,
+    lang,
 
+    Color,
+    Polygon,
     GraphicsLayer,
     SimpleFillSymbol,
     Query,
     QueryTask
 ) {
-    return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
-        // widgetsInTemplate: [private] Boolean
-        //      Specific to dijit._Templated.
+    return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, Evented], {
         widgetsInTemplate: true,
-
         templateString: template,
-
-        // baseClass: [private] String
-        //    The css class that is applied to the base div of the widget markup
         baseClass: 'county-zoomer',
-
-        // query: Query
-        query: null,
-
-        // qTask: QueryTask
-        qTask: null,
 
         // maskTask: QueryTask
         maskTask: null,
@@ -62,6 +64,7 @@ define([
         //      The graphics layer that the mask graphic is put into
         gLayer: null,
 
+
         // Params passed in via the constructor
 
         // map: esri.Map
@@ -69,8 +72,6 @@ define([
 
         constructor: function (params) {
             console.log('app/CountyZoomer:constructor', arguments);
-
-            this.buildQueryTasks();
 
             // create new graphics layer and add to map
             // using a separate graphics layer so that I don't interfere with other stuff
@@ -80,44 +81,51 @@ define([
         postCreate: function () {
             console.log('app/CountyZoomer:postCreate', arguments);
 
-            this.dialog.show();
-            this.wireEvents();
-        },
-        wireEvents: function () {
-            console.log('app/CountyZoomer:wireEvents', arguments);
+            // build buttons
+            config.counties.forEach(function buildButton(county) {
+                var btn = domConstruct.create('button', {
+                    className: 'btn btn-primary',
+                    type: 'button',
+                    innerHTML: county
+                }, this.body);
+                on(btn, 'click', lang.hitch(this, 'onCountyClick'));
+            }, this);
 
-            query('.county-zoomer-dialog td').onclick(this, this.onCountyClick);
-        },
-        buildQueryTasks: function () {
-            // summary:
-            //      description
-            console.log('app/CountyZoomer:buildQueryTasks', arguments);
+            $(this.dialog).modal();
 
-            this.query = new Query();
-            this.query.outFields = [];
-            this.query.returnGeometry = true;
+            this.webapi = new WebAPI({
+                apiKey: config.apiKey
+            });
 
-            // let arcgis server generalize the geometry so that it will be less to send back
-            // no big deal since i'm just using this geometry to zoom the map to the extent
-            this.query.maxAllowableOffset = 50;
-
-            this.qTask = new QueryTask(config.urls.countyQueryTaskUrl);
             this.maskTask = new QueryTask(config.urls.maskQueryTaskUrl);
-
-            this.connect(this.qTask, 'onComplete', this, 'onQueryComplete');
-            this.connect(this.qTask, 'onError', this, 'onError');
-            this.connect(this.maskTask, 'onComplete', this, 'onMaskComplete');
-            this.connect(this.maskTask, 'onError', this, 'onError');
+            this.maskTask.on('complete', lang.hitch(this, 'onMaskComplete'));
         },
-        onQueryComplete: function (fSet) {
+        show: function () {
+            // summary:
+            //      shows the dialog
+            console.log('app/CountyZoomer:show', arguments);
+
+            $(this.dialog).modal('show');
+        },
+        hide: function () {
+            // summary:
+            //      hides the dialog
+            // param or return
+            console.log('app/CountyZoomer:hide', arguments);
+
+            $(this.dialog).modal('hide');
+        },
+        onQueryComplete: function (features) {
             // summary:
             //      description
             console.log('app/CountyZoomer:onQueryComplete', arguments);
 
-            if (fSet.features.length > 0) {
-                this.map.setExtent(fSet.features[0].geometry.getExtent(), true);
+            if (features.length > 0) {
+                this.map.setExtent(new Polygon(features[0].geometry).getExtent(), true);
+
+                this.emit('zoomed', this.countyName);
             } else {
-                window.alert('No features found for query: ' + this.query.where);
+                window.alert('No features found for query: ' + this.where);
             }
         },
         onError: function () {
@@ -133,34 +141,42 @@ define([
             // countyName: String
             console.log('app/CountyZoomer:zoom', arguments);
 
-            this.query.where = config.fields.counties.NAME + ' = \'' + countyName.toUpperCase() + '\'';
-            this.qTask.execute(this.query);
-            this.maskTask.execute(this.query);
-
             this.gLayer.clear();
+
+            this.where = config.fields.counties.NAME + ' = \'' + countyName.toUpperCase() + '\'';
+            this.webapi.search(config.featureClassNames.counties, ['shape@envelope'], {
+                predicate: this.where,
+                spatialReference: 3857
+            }).then(lang.hitch(this, 'onQueryComplete'), lang.hitch(this, 'onError'));
+
+            this.countyName = countyName;
+
+            var queryParams = new Query();
+            queryParams.where = this.where;
+            queryParams.outFields = [];
+            queryParams.returnGeometry = true;
+            queryParams.maxAllowableOffset = 50;
+            this.maskTask.execute(queryParams);
         },
         onCountyClick: function (evt) {
             // summary:
-            //      description
+            //      fires off the webapi request
             console.log('app/CountyZoomer:onCountyClick', arguments);
 
-            var county = evt.target.innerHTML;
+            this.zoom(evt.target.innerHTML);
 
-            this.zoom(county);
-
-            this.dialog.hide();
+            this.hide();
         },
-        onMaskComplete: function (fSet) {
+        onMaskComplete: function (evt) {
             // summary:
             //      description
             console.log('app/CountyZoomer:onMaskComplete', arguments);
 
+            var fSet = evt.featureSet;
             if (fSet.features.length > 0) {
                 var g = fSet.features[0];
                 g.setSymbol(this.maskSymbol);
                 this.gLayer.add(g);
-            } else {
-                window.alert('No mask feature found for: ' + this.query.where);
             }
         }
     });

@@ -216,7 +216,7 @@ define([
             //      fires after the map and layers have loaded
             console.log('app/App:afterMapLoaded', arguments);
 
-            this.countyZoomer = new CountyZoomer({ map: this.map }, 'county-zoomer');
+            this.countyZoomer = new CountyZoomer({ map: this.map }, this.countyZoomerDiv);
 
             this.wireEvents();
 
@@ -237,8 +237,7 @@ define([
             console.log('app/App:wireEvents', arguments);
 
             var that = this;
-            this.connect(this.countyZoomer, 'zoom', this, 'onZoomToCounty');
-            this.connect(this.selectCounty, 'onClick', this, 'onSelectCounty');
+            this.countyZoomer.on('zoomed', lang.hitch(this, 'onZoomToCounty'));
             this.connect(this.uMenu, 'onLogOut', function () {
                 that.lDialog.clearCookies();
                 location.reload();
@@ -250,7 +249,7 @@ define([
             //      description
             console.log('app/App:onZoomToCounty', arguments);
 
-            dom.byId('county-name').innerHTML = county;
+            this.countyName.innerHTML = county;
 
             this.roadsToc.selectCounty(county);
             this.initMagicZooms(county);
@@ -263,7 +262,7 @@ define([
 
             this.map.infoWindow.hide();
 
-            this.countyZoomer.dialog.show();
+            this.countyZoomer.show();
         },
         initMagicZooms: function (county) {
             // summary:
@@ -283,7 +282,7 @@ define([
                 });
                 function showPopup(g) {
                     that.identify.showRoad(g,
-                        g.attributes[config.fields.magicZoomsData.ROAD_CLASS]);
+                        g.attributes[config.fields.sherlockData.ROAD_CLASS]);
                 }
                 setTimeout(function () {
                     showPopup(graphic);
@@ -301,14 +300,14 @@ define([
 
             var params = {
                 promptMessage: null,
-                mapServiceURL: config.urls.magicZoomsData,
+                mapServiceURL: config.urls.sherlockData,
                 map: this.map,
                 maxResultsToDisplay: 35,
                 tooltipPosition: 'after',
                 searchLayerIndex: layerIndex,
                 token: config.token,
                 outFields: [
-                    config.fields.magicZoomsData.ROAD_CLASS,
+                    config.fields.sherlockData.ROAD_CLASS,
                     config.fields.roads.CO_UNIQUE[0],
                     config.fields.roads.S_NAME[0],
                     config.fields.roads.CoA_AREA[0],

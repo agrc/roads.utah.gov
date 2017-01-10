@@ -9,6 +9,7 @@
 @import '../../agrc/resources/locate/FindAddress.css';
 @import '../../agrc/resources/locate/MagicZoom.css';
 @import 'Identify';
+@import 'CountyZoomer';
 
 $side-bar-width = 300px
 $container-margin = 5px
@@ -57,10 +58,15 @@ body, html, .app
         left $container-margin
         top 75px
         bottom $container-margin
+        .select-button
+            width 100%
+            margin-top 5px
         .magic-zoom
             position relative
         .magic-zoom.first
             z-index 27
+        .esriLegendServiceLabel
+            display none
     .side-bar-padder
         padding 10px
         width $side-bar-width

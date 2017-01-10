@@ -9,9 +9,9 @@
         class='side-bar-container container-with-border'>
         <div class="side-bar-padder"> <!-- required for side bar toggle widget -->
             <div class='county-container'>
-                County: <span id='county-name'></span>
+                Current County: <strong data-dojo-attach-point='countyName'></strong>
             </div>
-            <button data-dojo-type='dijit/form/Button' data-dojo-attach-point='selectCounty'>Select County</button>
+            <button class='btn btn-default select-button' data-dojo-attach-event='click: onSelectCounty'>Select County</button>
             <div class='clearer'></div>
         </div>
         <div id='pane-stack'>
@@ -38,5 +38,5 @@
         <div data-dojo-attach-point='sidebarToggle'></div>
         <div data-dojo-attach-point='mapDiv'></div>
     </div>
-    <div id='county-zoomer'></div>
+    <div data-dojo-attach-point='countyZoomerDiv'></div>
 </div>
