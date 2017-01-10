@@ -16,9 +16,11 @@
         </div>
         <div id='pane-stack'>
             <div title='Search' open='true'>
-                <div id='magic-zooms-container'></div>
-                <div id='place-name-search'></div>
-                <div id='city-search'></div>
+                <div class="search-container">
+                    <div data-dojo-attach-point='sherlocksContainer'></div>
+                    <div data-dojo-attach-point='placeSherlockDiv'></div>
+                    <div data-dojo-attach-point='citySherlockDiv'></div>
+                </div>
             </div>
             <div id='roads-identify-pane' title='Data for Selected Road'></div>
             <div title='Map Layers'>

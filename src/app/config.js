@@ -143,7 +143,9 @@ define([
         ],
 
         featureClassNames: {
-            counties: 'SGID10.Boundaries.Counties'
+            counties: 'SGID10.Boundaries.Counties',
+            cities: 'SGID10.BOUNDARIES.Municipalities_Carto',
+            gnis: 'SGID10.LOCATION.PlaceNamesGNIS2010'
         }
     };
 

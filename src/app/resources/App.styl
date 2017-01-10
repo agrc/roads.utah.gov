@@ -10,6 +10,7 @@
 @import '../../agrc/resources/locate/MagicZoom.css';
 @import 'Identify';
 @import 'CountyZoomer';
+@import '../../sherlock/resources/Sherlock';
 
 $side-bar-width = 300px
 $container-margin = 5px
@@ -67,10 +68,19 @@ body, html, .app
             z-index 27
         .esriLegendServiceLabel
             display none
-    .side-bar-padder
-        padding 10px
-        width $side-bar-width
-        margin -1px
+        .side-bar-padder
+            padding 10px
+            width $side-bar-width
+            margin -1px
+        .sherlock
+            position relative
+            width 100%
+            .input-group
+                width 100%
+            .matches-table
+                width 227px
+        .search-container
+            height 500px
 
     .center-container
         position absolute

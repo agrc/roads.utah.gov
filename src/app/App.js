@@ -5,7 +5,6 @@ define([
     'app/CountyZoomer',
     'app/Identify',
     'app/LayerToggler',
-    'app/MagicZoom',
     'app/RoadsToc',
     'app/Toc',
 
@@ -15,6 +14,7 @@ define([
 
     'dojo/dom',
     'dojo/dom-construct',
+    'dojo/dom-style',
     'dojo/text!app/templates/App.html',
     'dojo/_base/declare',
     'dojo/_base/lang',
@@ -30,6 +30,10 @@ define([
 
     'layer-selector/LayerSelector',
 
+    'sherlock/providers/MapService',
+    'sherlock/providers/WebAPI',
+    'sherlock/Sherlock',
+
     'dojo/domReady!'
 ], function (
     BaseMap,
@@ -38,7 +42,6 @@ define([
     CountyZoomer,
     Identify,
     LayerToggler,
-    MagicZoom,
     RoadsToc,
     Toc,
 
@@ -48,6 +51,7 @@ define([
 
     dom,
     domConstruct,
+    domStyle,
     template,
     declare,
     lang,
@@ -61,7 +65,11 @@ define([
     PaneStack,
     SideBarToggler,
 
-    LayerSelector
+    LayerSelector,
+
+    MapService,
+    WebAPI,
+    Sherlock
 ) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
         baseClass: 'app',
@@ -83,8 +91,8 @@ define([
         // roadsToc: plpco.RoadsToc
         roadsToc: null,
 
-        // magicZooms: plpco.MagicZoom[]
-        magicZooms: [],
+        // sherlocks: plpco.MagicZoom[]
+        sherlocks: [],
 
         // overlaysLyr: ArcGISDynamicMapServiceLayer
         overlaysLyr: null,
@@ -185,31 +193,22 @@ define([
             this.map.on('layers-add-result', lang.hitch(this, 'afterMapLoaded'));
 
             // city search
-            var muni = new MagicZoom({
-                promptMessage: null,
-                mapServiceURL: config.urls.terrain,
+            var muni = new Sherlock({
+                provider: new WebAPI(config.apiKey, config.featureClassNames.cities, 'NAME'),
                 map: this.map,
-                maxResultsToDisplay: 35,
-                tooltipPosition: 'after',
-                placeHolder: 'Municipality',
-                searchLayerIndex: 1,
-                searchField: 'NAME'
-            }, 'city-search');
+                placeHolder: 'Municipality'
+            }, this.citySherlockDiv);
             muni.startup();
+            domStyle.set(muni.domNode, 'z-index', 19);
 
             // gnis search
-            var place = new MagicZoom({
-                promptMessage: null,
-                mapServiceURL: config.urls.overlaysNoToken,
+            var place = new Sherlock({
+                provider: new WebAPI(config.apiKey, config.featureClassNames.gnis, 'NAME'),
                 map: this.map,
-                maxResultsToDisplay: 35,
-                tooltipPosition: 'after',
-                placeHolder: 'Place Name',
-                searchLayerIndex: 2,
-                searchField: 'NAME',
-                token: config.token
-            }, 'place-name-search');
+                placeHolder: 'Place Name'
+            }, this.placeSherlockDiv);
             place.startup();
+            domStyle.set(place.domNode, 'z-index', 20);
         },
         afterMapLoaded: function () {
             // summary:
@@ -251,8 +250,9 @@ define([
 
             this.countyName.innerHTML = county;
 
-            this.roadsToc.selectCounty(county);
-            this.initMagicZooms(county);
+            // TODO:
+            // this.roadsToc.selectCounty(county);
+            this.initSherlocks(county);
             this.identify.selectCounty(county);
         },
         onSelectCounty: function () {
@@ -264,20 +264,20 @@ define([
 
             this.countyZoomer.show();
         },
-        initMagicZooms: function (county) {
+        initSherlocks: function (county) {
             // summary:
             //      description
             // indB: Number
             //      The index of the B layer
             // indD: Number
             //      The index of the D layer
-            console.log('app/App:initMagicZooms', arguments);
+            console.log('app/App:initSherlocks', arguments);
 
             var that = this;
             function onZoom(graphic) {
                 that.identify.popup.hide();
                 that.identify.gLayer.clear();
-                that.magicZooms.forEach(function (zoom) {
+                that.sherlocks.forEach(function (zoom) {
                     zoom._graphicsLayer.clear();
                 });
                 function showPopup(g) {
@@ -289,60 +289,49 @@ define([
                 }, 1500);
             }
 
-            if (this.magicZooms) {
-                this.magicZooms.forEach(function (zoom) {
+            if (this.sherlocks) {
+                this.sherlocks.forEach(function (zoom) {
                     zoom.destroyRecursive();
                 });
-                this.magicZooms = [];
+                this.sherlocks = [];
             }
 
             var layerIndex = config.counties.indexOf(county);
-
-            var params = {
-                promptMessage: null,
-                mapServiceURL: config.urls.sherlockData,
-                map: this.map,
-                maxResultsToDisplay: 35,
-                tooltipPosition: 'after',
-                searchLayerIndex: layerIndex,
-                token: config.token,
-                outFields: [
-                    config.fields.sherlockData.ROAD_CLASS,
-                    config.fields.roads.CO_UNIQUE[0],
-                    config.fields.roads.S_NAME[0],
-                    config.fields.roads.CoA_AREA[0],
-                    config.fields.roads.RD_ID[0],
-                    config.fields.roads.Miles[0]
-                ],
-                defQuery: (this.lDialog.role === config.roleNames.plpcoGeneral) ? config.requestDefQuery : null
-            };
-
-            function getPlaceHolder(field) {
+            var getPlaceHolder = function (field) {
                 return field[1] + ' (' + field[0] + ')';
-            }
+            };
+            var buildWidget = function (fieldInfo) {
+                var mapServiceProvider = new MapService(
+                    config.urls.sherlockData + '/' + layerIndex,
+                    fieldInfo[0],
+                    {
+                        outFields: [
+                            config.fields.sherlockData.ROAD_CLASS,
+                            config.fields.roads.CO_UNIQUE[0],
+                            config.fields.roads.S_NAME[0],
+                            config.fields.roads.CoA_AREA[0],
+                            fieldInfo[0],
+                            config.fields.roads.Miles[0]
+                        ],
+                        token: config.token
+                    }
+                );
+                var sherlock = new Sherlock({
+                    provider: mapServiceProvider,
+                    map: this.map,
+                    placeHolder: getPlaceHolder(fieldInfo)
+                }, domConstruct.create('div', {}, this.sherlocksContainer));
+                sherlock.startup();
+                sherlock.on('zoomed', onZoom);
+                this.sherlocks.push(sherlock);
+                var z = domStyle.get(sherlock.domNode, 'z-index');
+                domStyle.set(sherlock.domNode, 'z-index', z - this.sherlocks.length);
+            }.bind(this);
 
-            var rdid = new MagicZoom(lang.mixin({
-                placeHolder: getPlaceHolder(config.fields.roads.RD_ID),
-                searchField: config.fields.roads.RD_ID[0]
-            }, params), domConstruct.create('div', {}, 'magic-zooms-container'));
-            this.magicZooms.push(rdid);
-            this.connect(rdid, 'onZoomed', onZoom);
-            var co = new MagicZoom(lang.mixin({
-                placeHolder: getPlaceHolder(config.fields.roads.CO_UNIQUE),
-                searchField: config.fields.roads.CO_UNIQUE[0]
-            }, params), domConstruct.create('div', {}, 'magic-zooms-container'));
-            this.magicZooms.push(co);
-            this.connect(co, 'onZoomed', onZoom);
-            var name = new MagicZoom(lang.mixin({
-                placeHolder: getPlaceHolder(config.fields.roads.S_NAME),
-                searchField: config.fields.roads.S_NAME[0]
-            }, params), domConstruct.create('div', {}, 'magic-zooms-container'));
-            this.magicZooms.push(name);
-            this.connect(name, 'onZoomed', onZoom);
-            this.magicZooms.push(new MagicZoom(lang.mixin({
-                placeHolder: getPlaceHolder(config.fields.roads.CoA_AREA),
-                searchField: config.fields.roads.CoA_AREA[0]
-            }, params), domConstruct.create('div', null, 'magic-zooms-container')));
+            buildWidget(config.fields.roads.RD_ID);
+            buildWidget(config.fields.roads.CO_UNIQUE);
+            buildWidget(config.fields.roads.S_NAME);
+            buildWidget(config.fields.roads.CoA_AREA);
         }
     });
 });

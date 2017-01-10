@@ -11,6 +11,7 @@ require({
         'ijit',
         'layer-selector',
         'moment',
+        'sherlock',
         {
             name: 'bootstrap',
             location: './bootstrap',
@@ -24,5 +25,10 @@ require({
             location: './spinjs',
             main: 'spin'
         }
-    ]
+    ],
+    map: {
+        '*': {
+            spinjs: 'spin'
+        }
+    }
 });
