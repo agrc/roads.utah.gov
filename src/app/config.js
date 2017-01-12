@@ -34,23 +34,6 @@ define([
         //      global reference to app
         app: null,
 
-        excludedLayerNodes: [
-            'Proposed RedRock Wilderness',
-            'BLM Wilderness Study Area'
-        ],
-        includedLayerNodes: [
-            'Quarter Sections',
-            'Quad Index',
-            'Imagery Index',
-            'Historic Imagery',
-            '15 Minute Quads',
-            '7.5 Minute Quads',
-            'UDOT Historic Maps',
-            'Washington Historic DRGs',
-            '2006 Imagery (1ft)',
-            '2011 Imagery (1m)'
-        ],
-
         // role: String
         //      The role of the current user
         role: 'PLPCO_Secure',
