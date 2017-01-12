@@ -22,6 +22,7 @@ define([
     'esri/layers/ArcGISDynamicMapServiceLayer',
     'esri/layers/ArcGISTiledMapServiceLayer',
     'esri/layers/ImageParameters',
+    'esri/layers/VectorTileLayer',
     'esri/layers/WebTiledLayer',
 
     'ijit/widgets/layout/PaneStack',
@@ -58,6 +59,7 @@ define([
     ArcGISDynamicMapServiceLayer,
     ArcGISTiledMapServiceLayer,
     ImageParameters,
+    VectorTileLayer,
     WebTiledLayer,
 
     PaneStack,
@@ -163,21 +165,54 @@ define([
                 })
             });
 
+            var loUrl = LayerSelector.prototype._applianceLayers.Lite.urlPattern.replace('{quad}', config.quadWord);
             var selector = new LayerSelector({
                 map: this.map,
                 quadWord: config.quadWord,
-                baseLayers: [{
-                    Factory: WebTiledLayer,
-                    url: LayerSelector.prototype._applianceLayers.Lite.urlPattern.replace('{quad}', config.quadWord),
-                    id: 'Lite',
-                    linked: ['Land Ownership']
-                }, 'Hybrid', 'Terrain', 'Topo'],
-                overlays: [{
-                    id: 'Land Ownership',
-                    Factory: ArcGISDynamicMapServiceLayer,
-                    url: config.urls.landOwnership,
-                    opacity: 0.6
-                }]
+                baseLayers: [
+                    {
+                        Factory: WebTiledLayer,
+                        url: loUrl,
+                        id: 'Lite',
+                        linked: ['Land Ownership']
+                    },
+                    'Hybrid',
+                    'Terrain',
+                    'Topo'
+                    // {
+                    //     id: 'Historic 15',
+                    //     Factory: ArcGISDynamicMapServiceLayer,
+                    //     url: config.urls.historic15
+                    // }, {
+                    //     id: 'Historic 7.5 Historic Imagery',
+                    //     Factory: ArcGISDynamicMapServiceLayer,
+                    //     url: config.urls.historic75
+                    // }, {
+                    //     id: 'UDOT Historic Maps',
+                    //     Factory: ArcGISDynamicMapServiceLayer,
+                    //     url: config.urls.udotHistoricMaps
+                    // }, {
+                    //     id: 'UDOT Historic D',
+                    //     Factory: ArcGISDynamicMapServiceLayer,
+                    //     url: config.urls.udotHistoricD
+                    // }, {
+                    //     id: '76 Imagery',
+                    //     Factory: ArcGISDynamicMapServiceLayer,
+                    //     url: config.urls.imagery76
+                    // }
+                ],
+                overlays: [
+                    {
+                        id: 'Land Ownership',
+                        Factory: ArcGISDynamicMapServiceLayer,
+                        url: config.urls.landOwnership,
+                        opacity: 0.6
+                    }, {
+                        id: 'Utah PLSS',
+                        Factory: VectorTileLayer,
+                        url: config.urls.plss
+                    }
+                ]
             });
             selector.startup();
 

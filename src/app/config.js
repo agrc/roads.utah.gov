@@ -22,6 +22,7 @@ define([
     // var roadsSecureUrl = localBase + 'RoadsSecure/MapServer';
     var fldREQUEST = 'REQUEST';
     var backgroundLayers = localBase + 'BackgroundLayers/MapServer';
+    var imageServicesBase = '??';
 
     window.AGRC = {
         // version.: String
@@ -99,6 +100,13 @@ define([
             /* eslint-disable max-len */
             photosBase: 'http://roads.utah.gov/wddr/',
 
+            historic15: imageServicesBase + '??',
+            historic75: imageServicesBase + '??',
+            imagery76: imageServicesBase + '??',
+            udotHistoricD: imageServicesBase + '??',
+            udotHistoricMaps: imageServicesBase + '??',
+
+            plss: 'http://tiles.arcgis.com/tiles/99lidPhWCzftIe9K/arcgis/rest/services/UtahPLSS/VectorTileServer',
             backgroundLayers: backgroundLayers,
             landOwnership: 'https://tlamap.trustlands.utah.gov/arcgis/rest/services/SpecialProject/UT_SITLA_LandOwnership_WM/MapServer',
             sherlockData: localBase + 'SherlockData/MapServer',
