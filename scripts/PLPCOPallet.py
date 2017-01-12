@@ -78,7 +78,8 @@ class PLPCOPallet(Pallet):
                 for row in delete_cur:
                     delete_cur.deleteRow()
 
-            county, road_class = crate.destination_name.split('_')
+            county, road_class_letter = crate.destination_name.split('_')
+            road_class = 'Class ' + road_class_letter
 
             combined_dataset = join(self.plpco, county)
 
@@ -88,9 +89,9 @@ class PLPCOPallet(Pallet):
                 arcpy.AddField_management(combined_dataset, fldROAD_CLASS, 'TEXT', field_length=7)
 
             self.log.info('Deleting features')
-            with arcpy.da.UpdateCursor(combined_dataset, '*', '{} = \'{}\''.format(fldROAD_CLASS, road_class)) as ucur:
+            with arcpy.da.UpdateCursor(combined_dataset, 'OID@', '{} = \'{}\''.format(fldROAD_CLASS, road_class)) as ucur:
                 for row in ucur:
-                    ucur.deleteRow(row)
+                    ucur.deleteRow()
 
             self.log.info('Loading Features')
             arcpy.Append_management(crate.destination, combined_dataset, 'NO_TEST')
@@ -99,7 +100,7 @@ class PLPCOPallet(Pallet):
             lyr = arcpy.MakeFeatureLayer_management(combined_dataset, 'layer', '{} IS NULL'.format(fldROAD_CLASS))
 
             self.log.info('Calculating ROAD_CLASS field')
-            arcpy.CalculateField_management(lyr, fldROAD_CLASS, '"Class {}"'.format(road_class))
+            arcpy.CalculateField_management(lyr, fldROAD_CLASS, '"{}"'.format(road_class))
 
             self.log.info('Deleting layer')
             arcpy.Delete_management(lyr)
