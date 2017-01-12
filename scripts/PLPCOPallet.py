@@ -72,6 +72,12 @@ class PLPCOPallet(Pallet):
 
             self.log.info(crate.destination_name)
 
+            request_def = 'REQUEST <> \'YES\''
+            self.log.info('removing {} features'.format(request_def))
+            with arcpy.da.UpdateCursor(crate.destination, 'OID@', request_def) as delete_cur:
+                for row in delete_cur:
+                    delete_cur.deleteRow()
+
             county, road_class = crate.destination_name.split('_')
 
             combined_dataset = join(self.plpco, county)
