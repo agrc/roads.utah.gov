@@ -36,6 +36,7 @@ counties = ['Beaver',
             'Washington',
             'Wayne']
 fldROAD_CLASS = 'ROAD_CLASS'
+photos_name = 'Litigation_RoadPhotos'
 
 
 class PLPCOPallet(Pallet):
@@ -55,7 +56,7 @@ class PLPCOPallet(Pallet):
 
         self.log.info('adding crates')
         self.add_crates(datasets, {'source_workspace': self.plpco_sde, 'destination_workspace': self.plpco})
-        self.add_crate(('Litigation_RoadPhotos', self.plpco_sde, self.plpco))
+        self.add_crate((photos_name, self.plpco_sde, self.plpco))
 
     def is_ready_to_ship(self):
         return True
@@ -72,11 +73,12 @@ class PLPCOPallet(Pallet):
 
             self.log.info(crate.destination_name)
 
-            request_def = 'REQUEST <> \'YES\''
-            self.log.info('removing {} features'.format(request_def))
-            with arcpy.da.UpdateCursor(crate.destination, 'OID@', request_def) as delete_cur:
-                for row in delete_cur:
-                    delete_cur.deleteRow()
+            if crate.destination_name != photos_name:
+                request_def = 'REQUEST <> \'YES\''
+                self.log.info('removing {} features'.format(request_def))
+                with arcpy.da.UpdateCursor(crate.destination, 'OID@', request_def) as delete_cur:
+                    for row in delete_cur:
+                        delete_cur.deleteRow()
 
             county, road_class_letter = crate.destination_name.split('_')
             road_class = 'Class ' + road_class_letter
