@@ -2,6 +2,7 @@
 var profile = {
     basePath: '../src',
     action: 'release',
+    cssOptimize: 'comments',
     mini: true,
     optimize: false,
     layerOptimize: false,
@@ -21,7 +22,6 @@ var profile = {
                 'dojox/gfx/shape',
                 'ladda/dist/spin'
             ],
-            targetStylesheet: 'app/resources/App.css',
             includeLocales: ['en-us'],
             customBase: true,
             boot: true
