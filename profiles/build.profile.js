@@ -2,7 +2,6 @@
 var profile = {
     basePath: '../src',
     action: 'release',
-    cssOptimize: 'comments',
     mini: true,
     optimize: false,
     layerOptimize: false,
@@ -55,6 +54,15 @@ var profile = {
         resourceTags: {
             copyOnly: function copyOnly(filename, mid) {
                 return mid !== 'jquery/jquery';
+            }
+        }
+    }, {
+        name: 'bootstrap',
+        location: './bootstrap',
+        main: 'dist/js/bootstrap',
+        resourceTags: {
+            copyOnly: function copyOnly(filename, mid) {
+                return mid !== 'bootstrap/dist/js/bootstrap';
             }
         }
     }],
