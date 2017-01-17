@@ -25,7 +25,7 @@ define([
     window.AGRC = {
         // version.: String
         //      The version number.
-        version: '2.0.0-1',
+        version: '2.0.0-2',
         appName: 'plpco',
 
         // app: App
@@ -79,7 +79,7 @@ define([
         },
         urls: {
             /* eslint-disable max-len */
-            photosBase: 'http://roads.utah.gov/wddr/',
+            photosBase: '/wddr/',
 
             // image services
             localBase: localBase,
