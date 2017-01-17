@@ -113,7 +113,8 @@ define([
             console.log('app/RoadsToc:togglePhotos', arguments);
 
             if (!this.photosLayer) {
-                this.photosLayer = new ArcGISDynamicMapServiceLayer(config.urls.roadsSecureUrl);
+                var url = config.urls.roadsSecureUrl + '?token=' + config.user.token;
+                this.photosLayer = new ArcGISDynamicMapServiceLayer(url);
                 this.photosLayer.setVisibleLayers([0], true);
                 this.map.addLayer(this.photosLayer);
                 this.map.addLoaderToLayer(this.photosLayer);
