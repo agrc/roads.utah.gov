@@ -1,35 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>PLPCO Roads Viewer Changelog</title>
+    <title>PLPCO Roads Viewer Changelog</title>
 
-	<!-- CSS -->
-	<link rel="stylesheet" href="content/css/releasenotes.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css"/>
+
+    <style type="text/css">
+        body {
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-	<h1>PLPCO Roads Viewer Changelog</h1>
-	<h2>1.4.0 <small>Sept 3 2013</small></h2>
-	<ul>
-		<li>Added all counties to app.</li>
-	</ul>
-	<h2>1.3.0 <small>Apr 13 2013</small></h2>
-	<ul>
-		<li>Added Kane county to application.</li>
-	</ul>
-	<h2>1.2.1 <small>Jul 19 2012</small></h2>
-	<ul>
-		<li>Pointed photos layer at single state-wide feature class.</li>
-		<li>Pointed photo urls at roads.utah.gov/wddr.</li>
-	</ul>
-	<h2>1.2.0 <small>May 29 2012</small></h2>
-	<ul>
-		<li>Added release notes page. </li>
-		<li>Added REQUEST field to Secure role and only showed features where REQUEST = 'YES' for General role.</li>
-		<li>Removed S_WIDTH field from all parts of application.</li>
-		<li>Changed "Affidavits" to read "Exhibit #".</li>
-		<li>Removed "Proposed RR" and "BLM Wilderness Study" layers from General role.</li>
-		<li>Fixed bug where the identify was not honoring the visibility of the roads and photo layers.</li>
-		<li>Fixed bug where the search boxes would not zoom to features that had special characters in them such as "Woods & Eyre Branding Road" in Beaver County.</li>
-	</ul>
+    <h1>PLPCO Roads Viewer Changelog</h1>
+    <a href="./" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Back to the app</a>
+    <a href="https://github.com/agrc/roads.utah.gov/issues?state=open" class="btn btn-default">Open Issues</a>
+
+    <h2>2.0.0-0 <small>Jan 17, 2017</small></h2>
+    <ul>
+        <li>Upgraded all 3rd party JS libraries.</li>
+        <li>Convert to web mercator (<a href='https://github.com/agrc/roads.utah.gov/issues/5'>#5</a>).</li>
+        <li>Upgrade user management to AGRC Permission Proxy (<a href='https://github.com/agrc/roads.utah.gov/issues/4'>#4</a>).</li>
+        <li>Switch PLSS layer to vector tiles layer (<a href='https://github.com/agrc/roads.utah.gov/issues/1'>#1</a>).</li>
+        <li>Enable an anonymous user (<a href='https://github.com/agrc/roads.utah.gov/issues/14'>#14</a>).</li>
+        <li>Switched to bootstrap for majority of layout components (<a href='https://github.com/agrc/roads.utah.gov/issues/16'>#16</a>).</li>
+        <li>Upgrade nightly script to be a [forklift](https://github.com/agrc/forklift) pallet.</li>
+        <li>Filter out all data where `REQUEST = 'NO'`</li>
+    </ul>
+    <h2>1.4.0 <small>Sept 3 2013</small></h2>
+    <ul>
+        <li>Added all counties to app.</li>
+    </ul>
+    <h2>1.3.0 <small>Apr 13 2013</small></h2>
+    <ul>
+        <li>Added Kane county to application.</li>
+    </ul>
+    <h2>1.2.1 <small>Jul 19 2012</small></h2>
+    <ul>
+        <li>Pointed photos layer at single state-wide feature class.</li>
+        <li>Pointed photo urls at roads.utah.gov/wddr.</li>
+    </ul>
+    <h2>1.2.0 <small>May 29 2012</small></h2>
+    <ul>
+        <li>Added release notes page. </li>
+        <li>Added REQUEST field to Secure role and only showed features where REQUEST = 'YES' for General role.</li>
+        <li>Removed S_WIDTH field from all parts of application.</li>
+        <li>Changed "Affidavits" to read "Exhibit #".</li>
+        <li>Removed "Proposed RR" and "BLM Wilderness Study" layers from General role.</li>
+        <li>Fixed bug where the identify was not honoring the visibility of the roads and photo layers.</li>
+        <li>Fixed bug where the search boxes would not zoom to features that had special characters in them such as "Woods & Eyre Branding Road" in Beaver County.</li>
+    </ul>
 </body>
 </html>
