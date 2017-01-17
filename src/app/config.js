@@ -25,7 +25,7 @@ define([
     window.AGRC = {
         // version.: String
         //      The version number.
-        version: '1.4.0',
+        version: '2.0.0-0',
         appName: 'plpco',
 
         // app: App
