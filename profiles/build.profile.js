@@ -20,7 +20,8 @@ var profile = {
                 'dojox/gfx/svg',
                 'dojox/gfx/svgext',
                 'dojox/gfx/shape',
-                'ladda/dist/spin'
+                'ladda/dist/spin',
+                'esri/layers/VectorTileLayerImpl'
             ],
             includeLocales: ['en-us'],
             customBase: true,
@@ -84,6 +85,6 @@ var profile = {
         'dojo-test-sniff': 0
     },
     userConfig: {
-        packages: ['app', 'dijit', 'dojox', 'agrc', 'ijit', 'esri', 'layer-selector']
+        packages: ['app', 'dijit', 'dojox', 'agrc', 'ijit', 'esri', 'layer-selector', 'sherlock']
     }
 };
