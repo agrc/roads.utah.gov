@@ -81,6 +81,7 @@ define([
             /* eslint-disable max-len */
             photosBase: 'http://roads.utah.gov/wddr/',
 
+            // image services
             localBase: localBase,
             historic15: localBase + '??',
             historic75: localBase + '??',
@@ -133,8 +134,8 @@ define([
 
     if (has('agrc-build') === 'prod') {
         // roads.utah.gov
-        window.AGRC.apiKey = '??';
-        window.AGRC.quadWord = '??';
+        window.AGRC.apiKey = 'AGRC-80C5042E528671';
+        window.AGRC.quadWord = '';
     } else if (has('agrc-build') === 'stage') {
         // test.mapserv.utah.gov
         window.AGRC.quadWord = 'opera-event-little-pinball';
