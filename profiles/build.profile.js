@@ -62,7 +62,7 @@ var profile = {
         main: 'dist/js/bootstrap',
         resourceTags: {
             copyOnly: function copyOnly(filename, mid) {
-                return mid !== 'bootstrap/dist/js/bootstrap';
+                return mid.startsWith('bootstrap/grunt');
             }
         }
     }],
