@@ -25,7 +25,7 @@ define([
     window.AGRC = {
         // version.: String
         //      The version number.
-        version: '2.0.0-3',
+        version: '2.0.0-4',
         appName: 'plpco',
 
         // app: App
@@ -95,8 +95,6 @@ define([
             sherlockData: localBase + 'SherlockData/MapServer',
             roadsUrl: roadsUrl,
             roadsSecureUrl: localBase + 'RoadsSecure/MapServer',
-
-            attributeTableUrl: roadsUrl + '/${0}',
 
             maskQueryTaskUrl: backgroundLayers + '/0'
             /* eslint-enable max-len */
