@@ -73,8 +73,11 @@ define([
         // roadType: String
         roadType: null,
 
+        // layer: Layer
+        layer: null,
 
-        constructor: function (county, roadType) {
+
+        constructor: function (county, roadType, layer) {
             // summary:
             //    Constructor method
             // county: String
@@ -86,11 +89,11 @@ define([
             this.roadType = roadType;
 
             // set layer for _GetSubLayersMixin
-            this.getSubLayersRoadsLayer = new ArcGISDynamicMapServiceLayer(config.urls.roadsSecureUrl);
+            this.getSubLayersRoadsLayer = layer;
 
             // query for data that will populate data grid
             var i = (this.roadType === 'B') ? 0 : 1;
-            this.url = dojoString.substitute(config.urls.attributeTableUrl, [this.getSubLayers(this.county)[i]]);
+            this.url = dojoString.substitute(config.urls.roadsSecureUrl + '/${0}', [this.getSubLayers(this.county)[i]]);
 
             this.executeQueryTask();
 

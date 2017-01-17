@@ -214,12 +214,12 @@ define([
                 if (this.bTable) {
                     this.bTable.show();
                 } else {
-                    this.bTable = new AttributeTable(this.county, 'B');
+                    this.bTable = new AttributeTable(this.county, 'B', this.getSubLayersRoadsLayer);
                 }
             } else if (this.dTable) {
                 this.dTable.show();
             } else {
-                this.dTable = new AttributeTable(this.county, 'D');
+                this.dTable = new AttributeTable(this.county, 'D', this.getSubLayersRoadsLayer);
             }
         }
     });
