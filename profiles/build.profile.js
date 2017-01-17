@@ -19,7 +19,8 @@ var profile = {
                 'dojox/gfx/path',
                 'dojox/gfx/svg',
                 'dojox/gfx/svgext',
-                'dojox/gfx/shape'
+                'dojox/gfx/shape',
+                'ladda/dist/spin'
             ],
             targetStylesheet: 'app/resources/App.css',
             includeLocales: ['en-us'],
@@ -31,6 +32,10 @@ var profile = {
         }
     },
     packages: [{
+        name: 'mustache',
+        location: 'mustache',
+        main: 'mustache'
+    }, {
         name: 'moment',
         location: 'moment',
         main: 'moment',
@@ -41,6 +46,15 @@ var profile = {
         resourceTags: {
             amd: function amd(filename, mid) {
                 return /\.js$/.test(filename);
+            }
+        }
+    }, {
+        name: 'jquery',
+        location: './jquery/dist',
+        main: 'jquery',
+        resourceTags: {
+            copyOnly: function copyOnly(filename, mid) {
+                return mid !== 'jquery/jquery';
             }
         }
     }],

@@ -1,24 +1,27 @@
 <div>
     <div class="checkbox">
-        <label data-dojo-attach-point='photoContainer'>
+        <label data-dojo-attach-point='photoContainer'
+            data-dojo-attach-event='click: togglePhotos' class='hidden'>
             <input data-dojo-attach-point='photoCheckbox' type='checkbox' checked>
             <span>Photos</span><img data-dojo-attach-point='legendPhotos'/>
         </label>
     </div>
     <div class="checkbox">
         <label>
-            <input data-dojo-attach-point='bCheckbox' type='checkbox' checked>
+            <input data-dojo-attach-point='bCheckbox'
+                data-dojo-attach-event='click: refreshVisibility' type='checkbox' checked>
             <span>Class B</span><img data-dojo-attach-point='legendB'/>
-            <button class='btn btn-info btn-xs'
+            <button class='btn btn-info btn-xs hidden'
                 data-dojo-attach-point='openTableB'
                 data-dojo-attach-event='click: onOpenTableClick'>open table</button>
         </label>
     </div>
     <div class="checkbox">
         <label>
-            <input data-dojo-attach-point='dCheckbox' type='checkbox' checked>
+            <input data-dojo-attach-point='dCheckbox'
+                data-dojo-attach-event='click: refreshVisibility' type='checkbox' checked>
             <span>Class D</span><img data-dojo-attach-point='legendD'/>
-            <button class='btn btn-info btn-xs'
+            <button class='btn btn-info btn-xs hidden'
                 data-dojo-attach-point='openTableD'
                 data-dojo-attach-event='click: onOpenTableClick'>open table</button>
         </label>

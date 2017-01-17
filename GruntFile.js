@@ -6,6 +6,7 @@ module.exports = function configure(grunt) {
         'src/app/**/*.html',
         'src/app/**/*.css',
         'src/index.html',
+        'src/user_admin.html',
         'src/ChangeLog.html'
     ];
     var gruntFile = 'GruntFile.js';

@@ -14,6 +14,7 @@ define([
 
     'esri/dijit/Popup',
     'esri/InfoTemplate',
+    'esri/layers/ArcGISDynamicMapServiceLayer',
     'esri/layers/GraphicsLayer',
     'esri/symbols/SimpleLineSymbol',
     'esri/symbols/SimpleMarkerSymbol',
@@ -37,6 +38,7 @@ define([
 
     Popup,
     InfoTemplate,
+    ArcGISDynamicMapServiceLayer,
     GraphicsLayer,
     SimpleLineSymbol,
     SimpleMarkerSymbol,
@@ -115,6 +117,8 @@ define([
             //      creates the query and query task
             console.log('app/Identify:constructor', arguments);
 
+            this.getSubLayersRoadsLayer = new ArcGISDynamicMapServiceLayer(config.urls.roadsUrl);
+
             this.roadsPane = registry.byId('roads-identify-pane');
             this.roadsPane.set('content', this.roadsPanePlaceHolderText);
 
@@ -123,38 +127,22 @@ define([
             this.photoSymbol = new SimpleMarkerSymbol().setSize(10).setColor(new Color([255, 255, 0]));
             this.photosTemplate = new InfoTemplate('${PHOTO_NAME}', photosTemplate);
 
-            var template;
-            if (this.isSecuredRole()) {
-                this.query = new Query();
-                var flds = [];
-                for (var f in config.fields.roads) {
-                    if (config.fields.roads.hasOwnProperty(f)) {
-                        flds.push(config.fields.roads[f][0]);
-                    }
-                }
-                this.query.outFields = flds;
-                this.query.returnGeometry = false;
-
-                template = roadsTemplateSecure;
-            } else {
-                template = roadsTemplateGeneral;
-            }
-
             this.iParams = new IdentifyParameters();
             this.iParams.layerOption = IdentifyParameters.LAYER_OPTION_ALL;
             this.iParams.returnGeometry = true;
             this.iParams.tolerance = 5;
 
-            this.iTask = new IdentifyTask(config.urls.roadsUrl);
+            this.initIdentifyTask(config.urls.roadsUrl);
 
-            this.roadsTemplate = new InfoTemplate('${' + config.fields.roads.S_NAME[0] + '}', template);
-
-            this.wireEvents();
+            this.roadsTemplate = new InfoTemplate('${' + config.fields.roads.S_NAME[0] + '}', roadsTemplateGeneral);
         },
-        wireEvents: function () {
+        initIdentifyTask: function (url) {
             // summary:
-            //      description
-            console.log('app/Identify:wireEvents', arguments);
+            //      sets up the identify task
+            // param or return
+            console.log('module.id:initIdentifyTask', arguments);
+
+            this.iTask = new IdentifyTask(url);
 
             this.iTask.on('error', lang.hitch(this, this.onTaskError));
             this.iTask.on('complete', lang.hitch(this, this.onIdentifyTaskComplete));
@@ -164,29 +152,26 @@ define([
             //      description
             console.log('app/Identify:selectCounty', arguments);
 
-            function addLayerIdToUrl(id) {
-                return config.urls.roadsUrl.replace('MapServer', 'MapServer/' + id);
+            this.currentCounty = county;
+
+            var addLayerIdToUrl = function (id) {
+                return config.urls.roadsSecureUrl.replace('MapServer', 'MapServer/' + id);
+            };
+
+            var subLayerIds = this.getSubLayers(county);
+            if (!subLayerIds) {
+                return;
             }
+            this.BLayerId = subLayerIds[0];
+            this.DLayerId = subLayerIds[1];
 
-            if (this.isSecuredRole()) {
-                // set layer for _GetSubLayersMixin
-                this.getSubLayersRoadsLayer = config.secureLayer;
+            this.qTaskB = new QueryTask(addLayerIdToUrl(this.BLayerId));
+            this.qTaskD = new QueryTask(addLayerIdToUrl(this.DLayerId));
 
-                var subLayerIds = this.getSubLayers(county);
-                if (!subLayerIds) {
-                    return;
-                }
-                this.BLayerId = subLayerIds[0];
-                this.DLayerId = subLayerIds[1];
-
-                this.qTaskB = new QueryTask(addLayerIdToUrl(this.BLayerId));
-                this.qTaskD = new QueryTask(addLayerIdToUrl(this.DLayerId));
-
-                this.qTaskB.on('error', lang.hitch(this, this.onTaskError));
-                this.qTaskB.on('complete', lang.hitch(this, this.onQueryTaskComplete));
-                this.qTaskD.on('error', lang.hitch(this, this.onTaskError));
-                this.qTaskD.on('complete', lang.hitch(this, this.onQueryTaskComplete));
-            }
+            this.qTaskB.on('error', lang.hitch(this, this.onTaskError));
+            this.qTaskB.on('complete', lang.hitch(this, this.onQueryTaskComplete));
+            this.qTaskD.on('error', lang.hitch(this, this.onTaskError));
+            this.qTaskD.on('complete', lang.hitch(this, this.onQueryTaskComplete));
         },
         getPopup: function () {
             // summary:
@@ -195,7 +180,7 @@ define([
             console.log('app/Identify:getPopup', arguments);
 
             this.popup = new Popup(null, domConstruct.create('div'));
-            this.popup.resize(400, 325);
+            this.popup.resize(400, 407);
             this.popup.on('hide', lang.hitch(this, this.onPopupHide));
 
             return this.popup;
@@ -220,19 +205,15 @@ define([
             config.app.map.showLoader();
 
             var lyrIds = this.toc.layer.visibleLayers;
-            if (config.app.map.getLevel() < 12) {
-                // remove photo layers we are zoomed too far out
-                var i = lyrIds.indexOf(0);
-                if (i !== -1) {
-                    lyrIds.splice(i, 1);
-                }
+            if (config.user && config.app.map.getLevel() >= 12) {
+                // add photos layer
+                lyrIds.push(0);
             }
             this.iParams.layerIds = lyrIds;
             this.iParams.width = config.app.map.width;
             this.iParams.height = config.app.map.height;
             this.iParams.geometry = clickEvt.mapPoint;
             this.iParams.mapExtent = config.app.map.extent;
-            this.iParams.layerDefinitions = this.toc.layer.layerDefinitions;
             this.iTask.execute(this.iParams);
         },
         onTaskError: function () {
@@ -292,7 +273,7 @@ define([
             this.dissolveGraphic.setSymbol(this.roadSymbol);
             this.gLayer.add(this.dissolveGraphic);
 
-            if (this.isSecuredRole()) {
+            if (config.user) {
                 this.fireQueryTask(roadClass, graphic);
             } else {
                 this.showRoadPane(graphic, this.roadsTemplate);
@@ -330,17 +311,28 @@ define([
 
             config.app.map.hideLoader();
         },
-        isSecuredRole: function () {
+        login: function () {
             // summary:
-            //      checks to see this this is a secured user
-            // returns: Boolean (true if Secured or Admin, false if General or no role)
-            console.log('app/Identify:isSecuredRole', arguments);
+            //      description
+            // param or return
+            console.log('app/Identify:login', arguments);
 
-            if (!config.role) {
-                throw new Error('There is no role defined!');
+            this.query = new Query();
+            var flds = [];
+            for (var f in config.fields.roads) {
+                if (config.fields.roads.hasOwnProperty(f)) {
+                    flds.push(config.fields.roads[f][0]);
+                }
             }
+            this.query.outFields = flds;
+            this.query.returnGeometry = false;
 
-            return config.role !== config.roleNames.plpcoGeneral;
+            this.roadsTemplate = new InfoTemplate('${' + config.fields.roads.S_NAME[0] + '}', roadsTemplateSecure);
+            this.initIdentifyTask(config.urls.roadsSecureUrl);
+
+            this.getSubLayersRoadsLayer = new ArcGISDynamicMapServiceLayer(config.urls.roadsSecureUrl);
+
+            this.selectCounty(this.currentCounty);
         },
         showPopup: function (g, template) {
             // summary:

@@ -14,6 +14,7 @@ define([
     'dojo/dom-construct',
     'dojo/dom-style',
     'dojo/text!app/templates/App.html',
+    'dojo/topic',
     'dojo/_base/declare',
     'dojo/_base/lang',
 
@@ -25,6 +26,7 @@ define([
     'esri/layers/VectorTileLayer',
     'esri/layers/WebTiledLayer',
 
+    'ijit/widgets/authentication/LoginRegister',
     'ijit/widgets/layout/PaneStack',
     'ijit/widgets/layout/SideBarToggler',
 
@@ -51,6 +53,7 @@ define([
     domConstruct,
     domStyle,
     template,
+    topic,
     declare,
     lang,
 
@@ -62,6 +65,7 @@ define([
     VectorTileLayer,
     WebTiledLayer,
 
+    LoginRegister,
     PaneStack,
     SideBarToggler,
 
@@ -75,12 +79,6 @@ define([
         baseClass: 'app',
         widgetsInTemplate: true,
         templateString: template,
-
-        // lDialog: plpco.LogInDialog
-        lDialog: null,
-
-        // uMenu: plpco.UserMenu
-        uMenu: null,
 
         // identify: plpco.Identify
         identify: null,
@@ -103,29 +101,15 @@ define([
         // leg: esri.dijit.Legend
         leg: null,
 
-        constructor: function () {
-            // summary:
-            //      first function to fire after page loads
-            console.log('app/App:constructor', arguments);
-        },
         postCreate: function () {
             // summary:
             //      description
             console.log('app/App:postCreate', arguments);
 
-            this.version.innerHTML = config.version;
-
             // global reference
             config.app = this;
 
-            this.afterLogInSuccessful();
-        },
-        afterLogInSuccessful: function (email, role) {
-            // summary:
-            //      Fires after the user has successfully logged in
-            // email: String
-            // role: String
-            console.log('app/App:afterLogInSuccessful', arguments);
+            this.version.innerHTML = config.version;
 
             var paneStack = new PaneStack(null, 'pane-stack');
             paneStack.startup();
@@ -139,10 +123,30 @@ define([
             }, this.sidebarToggle);
             sb.startup();
 
-            if (role !== config.roleNames.plpcoGeneral) {
-                // get secure layer for identify and attribute table to use
-                config.secureLayer = new ArcGISDynamicMapServiceLayer(config.urls.roadsUrl);
-            }
+            this.login = new LoginRegister({
+                appName: config.appName,
+                logoutDiv: this.logoutDiv,
+                showOnLoad: false,
+                securedServicesBaseUrl: config.urls.localBase
+            });
+            this.login.startup();
+            this.own(this.login);
+            this.login.on('remember-me-unsuccessful', lang.hitch(this, 'initLayerSelector'));
+
+            topic.subscribe(this.login.topics.signInSuccess, lang.hitch(this, 'afterLogInSuccessful'));
+        },
+        afterLogInSuccessful: function (loginResult) {
+            // summary:
+            //      Fires after the user has successfully logged in
+            console.log('app/App:afterLogInSuccessful', arguments);
+
+            config.user = loginResult.user;
+
+            // rebuild layer selector with secure layers...
+            this.initLayerSelector();
+
+            this.roadsToc.login();
+            this.identify.login();
         },
         initMap: function () {
             // summary:
@@ -165,57 +169,6 @@ define([
                 })
             });
 
-            var loUrl = LayerSelector.prototype._applianceLayers.Lite.urlPattern.replace('{quad}', config.quadWord);
-            var selector = new LayerSelector({
-                map: this.map,
-                quadWord: config.quadWord,
-                baseLayers: [
-                    {
-                        Factory: WebTiledLayer,
-                        url: loUrl,
-                        id: 'Lite',
-                        linked: ['Land Ownership']
-                    },
-                    'Hybrid',
-                    'Terrain',
-                    'Topo'
-                    // {
-                    //     id: 'Historic 15',
-                    //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: config.urls.historic15
-                    // }, {
-                    //     id: 'Historic 7.5 Historic Imagery',
-                    //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: config.urls.historic75
-                    // }, {
-                    //     id: 'UDOT Historic Maps',
-                    //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: config.urls.udotHistoricMaps
-                    // }, {
-                    //     id: 'UDOT Historic D',
-                    //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: config.urls.udotHistoricD
-                    // }, {
-                    //     id: '76 Imagery',
-                    //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: config.urls.imagery76
-                    // }
-                ],
-                overlays: [
-                    {
-                        id: 'Land Ownership',
-                        Factory: ArcGISDynamicMapServiceLayer,
-                        url: config.urls.landOwnership,
-                        opacity: 0.6
-                    }, {
-                        id: 'Utah PLSS',
-                        Factory: VectorTileLayer,
-                        url: config.urls.plss
-                    }
-                ]
-            });
-            selector.startup();
-
             var lyrs = [];
 
             // Roads
@@ -224,7 +177,10 @@ define([
             });
             lyrs.push(roadsLyr);
             this.map.addLoaderToLayer(roadsLyr);
-            this.roadsToc = new RoadsToc({ layer: roadsLyr }, 'roads-layers-toc');
+            this.roadsToc = new RoadsToc({
+                layer: roadsLyr,
+                map: this.map
+            }, 'roads-layers-toc');
             this.identify.toc = this.roadsToc;
 
             this.map.addLayers(lyrs);
@@ -247,6 +203,74 @@ define([
             }, this.placeSherlockDiv);
             place.startup();
             domStyle.set(place.domNode, 'z-index', 20);
+        },
+        initLayerSelector: function () {
+            // summary:
+            //      init layer selector adding secure layers if user is logged in
+            console.log('app/App:initLayerSelector', arguments);
+
+            if (this.layerSelector) {
+                this.layerSelector.destroyRecursive();
+            }
+
+            var loUrl = LayerSelector.prototype._applianceLayers.Lite.urlPattern.replace('{quad}', config.quadWord);
+            var baseLayers = [
+                {
+                    Factory: WebTiledLayer,
+                    url: loUrl,
+                    id: 'Lite',
+                    linked: ['Land Ownership']
+                },
+                'Hybrid',
+                'Terrain',
+                'Topo'
+            ];
+
+            if (config.user) {
+                baseLayers = baseLayers.concat([
+                    {
+                    //     id: 'Historic 15',
+                    //     Factory: ArcGISDynamicMapServiceLayer,
+                    //     url: config.urls.historic15
+                    // }, {
+                    //     id: 'Historic 7.5 Historic Imagery',
+                    //     Factory: ArcGISDynamicMapServiceLayer,
+                    //     url: config.urls.historic75
+                    // }, {
+                    //     id: 'UDOT Historic Maps',
+                    //     Factory: ArcGISDynamicMapServiceLayer,
+                    //     url: config.urls.udotHistoricMaps
+                    // }, {
+                    //     id: 'UDOT Historic D',
+                    //     Factory: ArcGISDynamicMapServiceLayer,
+                    //     url: config.urls.udotHistoricD
+                    // }, {
+                        id: '76 Imagery',
+                        Factory: ArcGISDynamicMapServiceLayer,
+                        url: config.urls.imagery76
+                    }
+                ]);
+            }
+
+            this.layerSelector = new LayerSelector({
+                map: this.map,
+                quadWord: config.quadWord,
+                baseLayers: baseLayers,
+                overlays: [
+                    {
+                        id: 'Land Ownership',
+                        Factory: ArcGISDynamicMapServiceLayer,
+                        url: config.urls.landOwnership,
+                        opacity: 0.6
+                    }, {
+                        id: 'Utah PLSS',
+                        Factory: VectorTileLayer,
+                        url: config.urls.plss
+                    }
+                ]
+            });
+            this.layerSelector.startup();
+            this.own(this.layerSelector);
         },
         afterMapLoaded: function () {
             // summary:
@@ -273,12 +297,7 @@ define([
             //      description
             console.log('app/App:wireEvents', arguments);
 
-            var that = this;
             this.countyZoomer.on('zoomed', lang.hitch(this, 'onZoomToCounty'));
-            this.connect(this.uMenu, 'onLogOut', function () {
-                that.lDialog.clearCookies();
-                location.reload();
-            });
             this.map.on('click', lang.hitch(this.identify, 'onMapClick'));
         },
         onZoomToCounty: function (county) {
@@ -343,9 +362,7 @@ define([
                             config.fields.sherlockData.ROAD_CLASS,
                             config.fields.roads.CO_UNIQUE[0],
                             config.fields.roads.S_NAME[0],
-                            config.fields.roads.CoA_AREA[0],
-                            fieldInfo[0],
-                            config.fields.roads.Miles[0]
+                            fieldInfo[0]
                         ],
                         token: config.token
                     }
@@ -365,7 +382,6 @@ define([
             buildWidget(config.fields.roads.RD_ID);
             buildWidget(config.fields.roads.CO_UNIQUE);
             buildWidget(config.fields.roads.S_NAME);
-            buildWidget(config.fields.roads.CoA_AREA);
         }
     });
 });

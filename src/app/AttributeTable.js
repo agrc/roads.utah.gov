@@ -16,6 +16,7 @@ define([
 
     'dojox/grid/DataGrid',
 
+    'esri/layers/ArcGISDynamicMapServiceLayer',
     'esri/symbols/SimpleLineSymbol',
     'esri/tasks/query',
     'esri/tasks/QueryTask'
@@ -37,6 +38,7 @@ define([
 
     DataGrid,
 
+    ArcGISDynamicMapServiceLayer,
     SimpleLineSymbol,
     Query,
     QueryTask
@@ -84,7 +86,7 @@ define([
             this.roadType = roadType;
 
             // set layer for _GetSubLayersMixin
-            this.getSubLayersRoadsLayer = config.secureLayer;
+            this.getSubLayersRoadsLayer = new ArcGISDynamicMapServiceLayer(config.urls.roadsSecureUrl);
 
             // query for data that will populate data grid
             var i = (this.roadType === 'B') ? 0 : 1;

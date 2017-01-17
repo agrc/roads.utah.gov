@@ -19,24 +19,22 @@ define([
 
     var localBase = '/arcgis/rest/services/PLPCO/';
     var roadsUrl = localBase + 'RoadsGeneral/MapServer';
-    // var roadsSecureUrl = localBase + 'RoadsSecure/MapServer';
     var fldREQUEST = 'REQUEST';
     var backgroundLayers = localBase + 'BackgroundLayers/MapServer';
-    var imageServicesBase = '??';
 
     window.AGRC = {
         // version.: String
         //      The version number.
         version: '1.4.0',
-        appName: '/PLPCO',
+        appName: 'plpco',
 
         // app: App
         //      global reference to app
         app: null,
 
-        // role: String
-        //      The role of the current user
-        role: 'PLPCO_Secure',
+        // user: User Object
+        //      user object returned from permission proxy
+        user: null,
 
         // apiKey: String
         //      The api key used for services on api.mapserv.utah.gov
@@ -83,28 +81,24 @@ define([
             /* eslint-disable max-len */
             photosBase: 'http://roads.utah.gov/wddr/',
 
-            historic15: imageServicesBase + '??',
-            historic75: imageServicesBase + '??',
-            imagery76: imageServicesBase + '??',
-            udotHistoricD: imageServicesBase + '??',
-            udotHistoricMaps: imageServicesBase + '??',
+            localBase: localBase,
+            historic15: localBase + '??',
+            historic75: localBase + '??',
+            imagery76: localBase + 'UtahDOQ_76',
+            udotHistoricD: localBase + '??',
+            udotHistoricMaps: localBase + '??',
 
             plss: 'http://tiles.arcgis.com/tiles/99lidPhWCzftIe9K/arcgis/rest/services/UtahPLSS/VectorTileServer',
             backgroundLayers: backgroundLayers,
             landOwnership: 'https://tlamap.trustlands.utah.gov/arcgis/rest/services/SpecialProject/UT_SITLA_LandOwnership_WM/MapServer',
             sherlockData: localBase + 'SherlockData/MapServer',
             roadsUrl: roadsUrl,
-            roadsLegend: roadsUrl + '/legend',
-            // roadsSecureUrl: roadsSecureUrl,
+            roadsSecureUrl: localBase + 'RoadsSecure/MapServer',
+
             attributeTableUrl: roadsUrl + '/${0}',
 
             maskQueryTaskUrl: backgroundLayers + '/0'
             /* eslint-enable max-len */
-        },
-        roleNames: {
-            plpcoAdmin: 'PLPCO_Admin',
-            plpcoSecure: 'PLPCO_Secure',
-            plpcoGeneral: 'PLPCO_General'
         },
         counties: [
             'Beaver',

@@ -8,10 +8,13 @@ define([
     'dijit/_WidgetBase',
     'dijit/_WidgetsInTemplateMixin',
 
+    'dojo/dom-class',
     'dojo/query',
     'dojo/request/xhr',
     'dojo/text!app/templates/RoadsToc.html',
-    'dojo/_base/declare'
+    'dojo/_base/declare',
+
+    'esri/layers/ArcGISDynamicMapServiceLayer'
 ], function (
     AttributeTable,
     config,
@@ -22,10 +25,13 @@ define([
     _WidgetBase,
     _WidgetsInTemplateMixin,
 
+    domClass,
     query,
     xhr,
     template,
-    declare
+    declare,
+
+    ArcGISDynamicMapServiceLayer
 ) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, _GetSubLayersMixin], {
         widgetsInTemplate: true,
@@ -34,13 +40,8 @@ define([
 
         // subLayerIds: Number[]
         //      An array of id's of the roads layers under the group layer.
-        //      Not the photo layers. See photoLayerIds below.
-        //      Layer Order: B Dissolve(0), D Dissolve Queries(1), D Dissolve(2)
+        //      Layer Order: B (0), D (1)
         subLayerIds: null,
-
-        // photoLayerIds: Number[]
-        //      An array of id's of the photo layers, if any.
-        photoLayerIds: null,
 
         // bTable: plpco.AttributeTable
         bTable: null,
@@ -57,6 +58,9 @@ define([
         // layer: esri.ArcGISDynamicMapServiceLayer
         layer: null,
 
+        // map: Map
+        map: null,
+
         constructor: function (params) {
             // set layer for _GetSubLayersMixin
             this.getSubLayersRoadsLayer = params.layer;
@@ -69,11 +73,29 @@ define([
             this.wireEvents();
 
             this.setLegend();
+        },
+        login: function () {
+            // summary:
+            //      description
+            // param or return
+            console.log('app/RoadsToc:login', arguments);
 
-            // hide open table links if general role
-            if (config.role === config.roleNames.plpcoGeneral) {
-                query('.roads-toc .open-table-container').style('display', 'none');
-            }
+            domClass.remove(this.openTableB, 'hidden');
+            domClass.remove(this.openTableD, 'hidden');
+            domClass.remove(this.photoContainer, 'hidden');
+            this.togglePhotos();
+
+            // get photos legend
+            xhr(config.urls.roadsSecureUrl + '/legend', {
+                handleAs: 'json',
+                query: {
+                    f: 'json',
+                    token: config.user.token
+                }
+            }).then(function (data) {
+                var photos = data.layers[0].legend[0].imageData;
+                this.legendPhotos.src = 'data:image/png;base64,' + photos;
+            }.bind(this));
         },
         wireEvents: function () {
             // summary:
@@ -82,7 +104,26 @@ define([
 
             this.connect(this.bCheckbox, 'onClick', this.refreshVisibility);
             this.connect(this.dCheckbox, 'onClick', this.refreshVisibility);
-            this.connect(this.photoCheckbox, 'onClick', this.refreshVisibility);
+            this.connect(this.photoCheckbox, 'onClick', this.togglePhotos);
+        },
+        togglePhotos: function () {
+            // summary:
+            //      description
+            // param or return
+            console.log('app/RoadsToc:togglePhotos', arguments);
+
+            if (!this.photosLayer) {
+                this.photosLayer = new ArcGISDynamicMapServiceLayer(config.urls.roadsSecureUrl);
+                this.photosLayer.setVisibleLayers([0], true);
+                this.map.addLayer(this.photosLayer);
+                this.map.addLoaderToLayer(this.photosLayer);
+            }
+
+            if (this.photoCheckbox.checked) {
+                this.photosLayer.show();
+            } else {
+                this.photosLayer.hide();
+            }
         },
         setLegend: function () {
             // summary:
@@ -90,19 +131,16 @@ define([
             console.log('app/RoadsToc:setLegend', arguments);
 
             var that = this;
-            xhr(config.urls.roadsLegend, {
+            xhr(config.urls.roadsUrl + '/legend', {
                 handleAs: 'json',
                 query: {
-                    f: 'json',
-                    token: config.token
+                    f: 'json'
                 }
             }).then(function (data) {
-                var b = data.layers[1].legend[0].imageData;
+                var b = data.layers[2].legend[0].imageData;
                 that.legendB.src = 'data:image/png;base64,' + b;
                 var d = data.layers[3].legend[0].imageData;
                 that.legendD.src = 'data:image/png;base64,' + d;
-                var photos = data.layers[0].legend[0].imageData;
-                that.legendPhotos.src = 'data:image/png;base64,' + photos;
             });
         },
         selectCounty: function (county) {
@@ -144,9 +182,6 @@ define([
             }
             if (this.dCheckbox.checked) {
                 visibleLayers.push(this.subLayerIds[1]);
-            }
-            if (this.photoCheckbox.checked) {
-                visibleLayers.push(0);
             }
             if (visibleLayers.length === 0) {
                 this.layer.hide();
