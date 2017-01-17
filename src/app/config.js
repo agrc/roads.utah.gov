@@ -135,7 +135,7 @@ define([
     if (has('agrc-build') === 'prod') {
         // roads.utah.gov
         window.AGRC.apiKey = 'AGRC-80C5042E528671';
-        window.AGRC.quadWord = '';
+        window.AGRC.quadWord = 'pancake-economy-raymond-sonic';
     } else if (has('agrc-build') === 'stage') {
         // test.mapserv.utah.gov
         window.AGRC.quadWord = 'opera-event-little-pinball';
