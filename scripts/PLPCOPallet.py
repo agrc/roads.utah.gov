@@ -50,7 +50,8 @@ class PLPCOPallet(Pallet):
 
         self.arcgis_services = [('PLPCO/BackgroundLayers', 'MapServer'),
                                 ('PLPCO/RoadsGeneral', 'MapServer'),
-                                ('PLPCO/RoadsSecure', 'MapServer')]
+                                ('PLPCO/RoadsSecure', 'MapServer'),
+                                ('PLPCO/SherlockData', 'MapServer')]
 
         datasets = [county + '_B' for county in counties] + [county + '_D' for county in counties]
 
