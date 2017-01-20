@@ -21,6 +21,7 @@ define([
     'esri/dijit/Legend',
     'esri/geometry/Extent',
     'esri/layers/ArcGISDynamicMapServiceLayer',
+    'esri/layers/ArcGISImageServiceLayer',
     'esri/layers/ArcGISTiledMapServiceLayer',
     'esri/layers/ImageParameters',
     'esri/layers/VectorTileLayer',
@@ -60,6 +61,7 @@ define([
     Legend,
     Extent,
     ArcGISDynamicMapServiceLayer,
+    ArcGISImageServiceLayer,
     ArcGISTiledMapServiceLayer,
     ImageParameters,
     VectorTileLayer,
@@ -114,15 +116,6 @@ define([
             var paneStack = new PaneStack(null, 'pane-stack');
             paneStack.startup();
 
-            this.initMap();
-
-            var sb = new SideBarToggler({
-                sidebar: this.sideBar,
-                map: this.map,
-                centerContainer: this.centerContainer
-            }, this.sidebarToggle);
-            sb.startup();
-
             this.login = new LoginRegister({
                 appName: config.appName,
                 logoutDiv: this.logoutDiv,
@@ -131,29 +124,21 @@ define([
             });
             this.login.startup();
             this.own(this.login);
-            this.login.on('remember-me-unsuccessful', lang.hitch(this, 'initLayerSelector'));
 
-            topic.subscribe(this.login.topics.signInSuccess, lang.hitch(this, 'afterLogInSuccessful'));
+            this.login.on('remember-me-unsuccessful', lang.hitch(this, 'initMap'));
+            this.login.on('sign-in-success', lang.hitch(this, 'initMap'));
+
+            this.identify = new Identify();
         },
-        afterLogInSuccessful: function (loginResult) {
-            // summary:
-            //      Fires after the user has successfully logged in
-            console.log('app/App:afterLogInSuccessful', arguments);
-
-            config.user = loginResult.user;
-
-            // rebuild layer selector with secure layers...
-            this.initLayerSelector();
-
-            this.roadsToc.login();
-            this.identify.login();
-        },
-        initMap: function () {
+        initMap: function (evt) {
             // summary:
             //      description
             console.log('app/App:initMap', arguments);
 
-            this.identify = new Identify();
+            // reload if you are logging in after loading the map logged out
+            if (this.map) {
+                window.document.location.reload();
+            }
 
             this.map = new BaseMap(this.mapDiv, {
                 useDefaultBaseMap: false,
@@ -169,6 +154,19 @@ define([
                 })
             });
 
+            this.sb = new SideBarToggler({
+                sidebar: this.sideBar,
+                map: this.map,
+                centerContainer: this.centerContainer
+            }, this.sidebarToggle);
+            this.sb.startup();
+
+            if (evt.user) {
+                config.user = evt.user;
+            }
+
+            this.initLayerSelector();
+
             var lyrs = [];
 
             // Roads
@@ -177,6 +175,7 @@ define([
             });
             lyrs.push(roadsLyr);
             this.map.addLoaderToLayer(roadsLyr);
+
             this.roadsToc = new RoadsToc({
                 layer: roadsLyr,
                 map: this.map
@@ -186,23 +185,28 @@ define([
             this.map.addLayers(lyrs);
             this.map.on('layers-add-result', lang.hitch(this, 'afterMapLoaded'));
 
+            if (evt.user) {
+                this.roadsToc.login();
+                this.identify.login();
+            }
+
             // city search
-            var muni = new Sherlock({
+            this.muni = new Sherlock({
                 provider: new WebAPI(config.apiKey, config.featureClassNames.cities, 'NAME'),
                 map: this.map,
                 placeHolder: 'Municipality'
             }, this.citySherlockDiv);
-            muni.startup();
-            domStyle.set(muni.domNode, 'z-index', 19);
+            this.muni.startup();
+            domStyle.set(this.muni.domNode, 'z-index', 19);
 
             // gnis search
-            var place = new Sherlock({
+            this.place = new Sherlock({
                 provider: new WebAPI(config.apiKey, config.featureClassNames.gnis, 'NAME'),
                 map: this.map,
                 placeHolder: 'Place Name'
             }, this.placeSherlockDiv);
-            place.startup();
-            domStyle.set(place.domNode, 'z-index', 20);
+            this.place.startup();
+            domStyle.set(this.place.domNode, 'z-index', 20);
         },
         initLayerSelector: function () {
             // summary:
@@ -226,28 +230,31 @@ define([
                 'Topo'
             ];
 
+            var addToken = function (url) {
+                return url + '?token=' + config.user.token;
+            };
             if (config.user) {
                 baseLayers = baseLayers.concat([
                     {
                     //     id: 'Historic 15',
                     //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: config.urls.historic15
+                    //     url: addToken(config.urls.historic15)
                     // }, {
                     //     id: 'Historic 7.5 Historic Imagery',
                     //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: config.urls.historic75
+                    //     url: addToken(config.urls.historic75)
                     // }, {
                     //     id: 'UDOT Historic Maps',
                     //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: config.urls.udotHistoricMaps
+                    //     url: addToken(config.urls.udotHistoricMaps)
                     // }, {
                     //     id: 'UDOT Historic D',
                     //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: config.urls.udotHistoricD
+                    //     url: addToken(config.urls.udotHistoricD)
                     // }, {
                         id: '76 Imagery',
-                        Factory: ArcGISDynamicMapServiceLayer,
-                        url: config.urls.imagery76
+                        Factory: ArcGISImageServiceLayer,
+                        url: addToken(config.urls.imagery76)
                     }
                 ]);
             }
