@@ -64,6 +64,10 @@ define([
         //      The graphics layer that the mask graphic is put into
         gLayer: null,
 
+        // currentCountyKey: String
+        //      key used with local storage
+        currentCountyKey: 'currentCounty',
+
 
         // Params passed in via the constructor
 
@@ -81,6 +85,8 @@ define([
         postCreate: function () {
             console.log('app/CountyZoomer:postCreate', arguments);
 
+            var currentCounty = window.localStorage.getItem(this.currentCountyKey);
+
             // build buttons
             config.counties.forEach(function buildButton(county) {
                 var btn = domConstruct.create('button', {
@@ -91,7 +97,9 @@ define([
                 on(btn, 'click', lang.hitch(this, 'onCountyClick'));
             }, this);
 
-            $(this.dialog).modal();
+            $(this.dialog).modal({
+                show: currentCounty === null
+            });
 
             this.webapi = new WebAPI({
                 apiKey: config.apiKey
@@ -99,6 +107,10 @@ define([
 
             this.maskTask = new QueryTask(config.urls.maskQueryTaskUrl);
             this.maskTask.on('complete', lang.hitch(this, 'onMaskComplete'));
+
+            if (currentCounty) {
+                this.zoom(currentCounty);
+            }
         },
         show: function () {
             // summary:
@@ -140,6 +152,8 @@ define([
             //      zooms to the county
             // countyName: String
             console.log('app/CountyZoomer:zoom', arguments);
+
+            window.localStorage.setItem(this.currentCountyKey, countyName);
 
             this.gLayer.clear();
 
