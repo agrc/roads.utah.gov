@@ -25,7 +25,7 @@ define([
     window.AGRC = {
         // version.: String
         //      The version number.
-        version: '2.0.0-10',
+        version: '2.0.0-11',
         appName: 'plpco',
 
         // app: App
@@ -86,8 +86,8 @@ define([
             historic15: localBase + '??',
             historic75: localBase + '??',
             imagery76: localBase + 'UtahDOQ_76/ImageServer',
-            udotHistoricD: localBase + '??',
-            udotHistoricMaps: localBase + '??',
+            udotHistoricD: localBase + 'UDOTHistoric_D/ImageServer',
+            udotHistoricMaps: localBase + 'UDOTHistoric_B/ImageServer',
 
             plss: 'http://tiles.arcgis.com/tiles/99lidPhWCzftIe9K/arcgis/rest/services/UtahPLSS/VectorTileServer',
             backgroundLayers: backgroundLayers,
