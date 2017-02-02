@@ -25,7 +25,7 @@ define([
     window.AGRC = {
         // version.: String
         //      The version number.
-        version: '2.0.0-14',
+        version: '2.0.0-15',
         appName: 'plpco',
 
         // app: App
@@ -83,8 +83,8 @@ define([
 
             // image services
             localBase: localBase,
-            // historic15: localBase + 'HistoricQuads_15Minute/ImageServer',
-            // historic75: localBase + 'HistoricQuads_75Minute/ImageServer',
+            historic15: localBase + 'HistoricQuads_15Minute/ImageServer',
+            historic75: localBase + 'HistoricQuads_75Minute/ImageServer',
             imagery76: localBase + 'UtahDOQ_76/ImageServer',
             udotHistoricD: localBase + 'UDOTHistoric_D/ImageServer',
             udotHistoricMaps: localBase + 'UDOTHistoric_B/ImageServer',
