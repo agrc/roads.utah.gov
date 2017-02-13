@@ -236,22 +236,22 @@ define([
             if (config.user) {
                 baseLayers = baseLayers.concat([
                     {
-                    //     id: 'Historic 15',
-                    //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: addToken(config.urls.historic15)
-                    // }, {
-                    //     id: 'Historic 7.5 Historic Imagery',
-                    //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: addToken(config.urls.historic75)
-                    // }, {
-                    //     id: 'UDOT Historic Maps',
-                    //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: addToken(config.urls.udotHistoricMaps)
-                    // }, {
-                    //     id: 'UDOT Historic D',
-                    //     Factory: ArcGISDynamicMapServiceLayer,
-                    //     url: addToken(config.urls.udotHistoricD)
-                    // }, {
+                        id: 'Historic 15',
+                        Factory: ArcGISImageServiceLayer,
+                        url: addToken(config.urls.historic15)
+                    }, {
+                        id: 'Historic 7.5 Historic Imagery',
+                        Factory: ArcGISImageServiceLayer,
+                        url: addToken(config.urls.historic75)
+                    }, {
+                        id: 'UDOT Historic Maps',
+                        Factory: ArcGISImageServiceLayer,
+                        url: addToken(config.urls.udotHistoricMaps)
+                    }, {
+                        id: 'UDOT Historic D',
+                        Factory: ArcGISImageServiceLayer,
+                        url: addToken(config.urls.udotHistoricD)
+                    }, {
                         id: '76 Imagery',
                         Factory: ArcGISImageServiceLayer,
                         url: addToken(config.urls.imagery76)
