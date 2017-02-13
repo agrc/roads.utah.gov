@@ -36,7 +36,9 @@ module.exports = function configure(grunt) {
         '!stubmodule/**',
         '!util/**'
     ];
-    var deployDir = 'roads';
+
+    // only used in stage
+    var deployDir = 'preview';
     var secrets;
 
     try {
@@ -197,7 +199,8 @@ module.exports = function configure(grunt) {
                 options: {
                     host: '<%= secrets.stage.host %>',
                     username: '<%= secrets.stage.username %>',
-                    password: '<%= secrets.stage.password %>'
+                    password: '<%= secrets.stage.password %>',
+                    path: 'wwwroot/' + deployDir + '/'
                 }
             },
             prod: {
@@ -208,12 +211,10 @@ module.exports = function configure(grunt) {
                     host: '<%= secrets.prod.host %>',
                     username: '<%= secrets.prod.username %>',
                     password: '<%= secrets.prod.password %>',
-                    path: './upload/' + deployDir
+                    path: 'wwwroot/'
                 }
             },
             options: {
-                createDirectories: true,
-                path: './wwwroot/' + deployDir + '/',
                 srcBasePath: 'deploy/',
                 showProgress: true
             }
@@ -231,7 +232,7 @@ module.exports = function configure(grunt) {
                 }
             },
             prod: {
-                command: ['cd wwwroot/' + deployDir, 'unzip -oq deploy.zip', 'rm deploy.zip'].join(';'),
+                command: ['cd wwwroot/', 'unzip -oq deploy.zip', 'rm deploy.zip'].join(';'),
                 options: {
                     host: '<%= secrets.prod.host %>',
                     username: '<%= secrets.prod.username %>',
@@ -313,7 +314,8 @@ module.exports = function configure(grunt) {
     grunt.registerTask('deploy-prod', [
         'clean:deploy',
         'compress:main',
-        'sftp:prod'
+        'sftp:prod',
+        'sshexec:prod'
     ]);
     grunt.registerTask('build-stage', [
         'parallel:buildAssets',
