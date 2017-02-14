@@ -132,7 +132,7 @@ define([
 
     if (has('agrc-build') === 'prod') {
         // roads.utah.gov
-        window.AGRC.apiKey = 'AGRC-80C5042E528671';
+        window.AGRC.apiKey = 'AGRC-ECE34D2B897904';
         window.AGRC.quadWord = 'pancake-economy-raymond-sonic';
     } else if (has('agrc-build') === 'stage') {
         // test.mapserv.utah.gov
