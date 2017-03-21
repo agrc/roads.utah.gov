@@ -3,7 +3,7 @@
         "name": "plpco",
         "description": "PLPCO Roads Viewer",
         "baseUrl": "roads.utah.gov",
-        "adminPage": "user_admin.html"
+        "adminPage": "/user_admin.html"
     },
     "adminEmails": [
         "<jason wolf>"
