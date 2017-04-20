@@ -40,10 +40,12 @@ photos_name = 'Litigation_RoadPhotos'
 
 
 class PLPCOPallet(Pallet):
+    def __init__(self):
+        super(PLPCOPallet, self).__init__()
+
     def build(self, config):
-        self.staging = r'C:\Scheduled\staging'
         self.plpco_sde = join(self.garage, 'PLPCO.sde')
-        self.plpco = join(self.staging, 'plpco.gdb')
+        self.plpco = join(self.staging_rack, 'plpco.gdb')
         self.sgid = join(self.garage, 'SGID10.sde')
 
         self.copy_data = [self.plpco]
