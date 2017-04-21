@@ -40,9 +40,6 @@ photos_name = 'Litigation_RoadPhotos'
 
 
 class PLPCOPallet(Pallet):
-    def __init__(self):
-        super(PLPCOPallet, self).__init__()
-
     def build(self, config):
         self.plpco_sde = join(self.garage, 'PLPCO.sde')
         self.plpco = join(self.staging_rack, 'plpco.gdb')
