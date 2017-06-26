@@ -1,0 +1,41 @@
+<div>
+    <div class='title-container'>
+        <h1>
+            <span class='title' data-dojo-attach-point='egg'>PLPCO Roads Viewer</span>
+            <a data-dojo-attach-point='version' class='version' href='ChangeLog.html'></a>
+        </h1>
+        <div class='login-register-logout' data-dojo-attach-point="logoutDiv"></div>
+    </div>
+    <div data-dojo-attach-point='sideBar'
+        class='side-bar-container container-with-border'>
+        <div class="side-bar-padder"> <!-- required for side bar toggle widget -->
+            <div class='county-container'>
+                Current County: <strong data-dojo-attach-point='countyName'></strong>
+            </div>
+            <button class='btn btn-default select-button' data-dojo-attach-event='click: onSelectCounty'>Select County</button>
+            <div class='clearer'></div>
+        </div>
+        <div id='pane-stack'>
+            <div title='Search' open='true'>
+                <div class="search-container">
+                    <div data-dojo-attach-point='sherlocksContainer'></div>
+                    <div data-dojo-attach-point='placeSherlockDiv'></div>
+                    <div data-dojo-attach-point='citySherlockDiv'></div>
+                </div>
+            </div>
+            <div id='roads-identify-pane' title='Data for Selected Road'></div>
+            <div title='Roads Layers'>
+                <div id='roads-layers-toc'></div>
+            </div>
+            <div title='Legend'>
+                <div id='legend'></div>
+            </div>
+        </div>
+    </div>
+    <div data-dojo-attach-point='centerContainer'
+        class='center-container container-with-border'>
+        <div data-dojo-attach-point='sidebarToggle'></div>
+        <div data-dojo-attach-point='mapDiv'></div>
+    </div>
+    <div data-dojo-attach-point='countyZoomerDiv'></div>
+</div>

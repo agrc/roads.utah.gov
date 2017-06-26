@@ -1,4 +1,16 @@
-define(['dojo/_base/declare', 'dojo/_base/lang', 'esri/tasks/query', 'esri/tasks/QueryTask'], function (declare, lang, Query, QueryTask) {
+define([
+    'dojo/_base/declare',
+    'dojo/_base/lang',
+
+    'esri/tasks/query',
+    'esri/tasks/QueryTask'
+], function (
+    declare,
+    lang,
+
+    Query,
+    QueryTask
+) {
     return declare(null, {
         // summary:
         //      Easily add a query task to your class
@@ -9,7 +21,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'esri/tasks/query', 'esri/tasks
         // qTask: esri.tasks.QueryTask
         qTask: null,
 
-        setUpQueryTask: function setUpQueryTask(url, queryParams) {
+        setUpQueryTask: function (url, queryParams) {
             // summary:
             //      sets up the query task and query parameters objects
             //      and wires events
@@ -33,19 +45,19 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'esri/tasks/query', 'esri/tasks
             this.qTask.on('complete', lang.hitch(this, 'onQueryTaskComplete'));
             this.qTask.on('error', lang.hitch(this, 'onQueryTaskError'));
         },
-        onQueryTaskComplete: function onQueryTaskComplete() {
+        onQueryTaskComplete: function () {
             // summary:
             //      callback for the query task
             // fSet: esri.tasks.FeatureSet
             console.log('app/_QueryTaskMixin:onQueryTaskComplete', arguments);
         },
-        onQueryTaskError: function onQueryTaskError() {
+        onQueryTaskError: function () {
             // summary:
             //      callback for when the query task returns an error
             // er: Error
             console.log('app/_QueryTaskMixin:onQueryTaskError', arguments);
         },
-        executeQueryTask: function executeQueryTask(geo, where) {
+        executeQueryTask: function (geo, where) {
             // summary:
             //      updates the query and fires the task
             console.log('app/_QueryTaskMixin:executeQueryTask', arguments);
@@ -57,4 +69,3 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'esri/tasks/query', 'esri/tasks
         }
     });
 });
-//# sourceMappingURL=_QueryTaskMixin.js.map

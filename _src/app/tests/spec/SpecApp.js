@@ -1,4 +1,13 @@
-require(['app/App', 'dojo/dom-construct', 'dojo/_base/window'], function (App, domConstruct, win) {
+require([
+    'app/App',
+    'dojo/dom-construct',
+    'dojo/_base/window'
+],
+function (
+    App,
+    domConstruct,
+    win
+    ) {
     describe('app/App', function () {
         var testWidget;
         beforeEach(function () {
@@ -15,4 +24,3 @@ require(['app/App', 'dojo/dom-construct', 'dojo/_base/window'], function (App, d
         });
     });
 });
-//# sourceMappingURL=SpecApp.js.map

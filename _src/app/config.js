@@ -1,5 +1,15 @@
 /* jshint maxlen:false */
-define(['dojo/has', 'dojo/request/xhr', 'esri/config'], function (has, xhr, esriConfig) {
+define([
+    'dojo/has',
+    'dojo/request/xhr',
+
+    'esri/config'
+], function (
+    has,
+    xhr,
+
+    esriConfig
+) {
     // force api to use CORS on mapserv thus removing the test request on app load
     // e.g. http://mapserv.utah.gov/ArcGIS/rest/info?f=json
     esriConfig.defaults.io.corsEnabledServers.push('mapserv.utah.gov');
@@ -15,7 +25,7 @@ define(['dojo/has', 'dojo/request/xhr', 'esri/config'], function (has, xhr, esri
     window.AGRC = {
         // version.: String
         //      The version number.
-        version: '2.1.0',
+        version: '2.0.1',
         appName: 'plpco',
 
         // app: App
@@ -86,12 +96,33 @@ define(['dojo/has', 'dojo/request/xhr', 'esri/config'], function (has, xhr, esri
             roadsUrl: roadsUrl,
             roadsSecureUrl: localBase + 'RoadsSecure/MapServer',
 
-            maskQueryTaskUrl: backgroundLayers + '/0',
-            wildernessStudyAreas: backgroundLayers + '/1',
-            redRockAreas: backgroundLayers + '/2'
+            maskQueryTaskUrl: backgroundLayers + '/0'
             /* eslint-enable max-len */
         },
-        counties: ['Beaver', 'Box Elder', 'Carbon', 'Daggett', 'Duchesne', 'Emery', 'Garfield', 'Grand', 'Iron', 'Juab', 'Millard', 'Piute', 'Rich', 'San Juan', 'Sanpete', 'Sevier', 'Tooele', 'Uintah', 'Utah', 'Washington', 'Wayne', 'Kane'],
+        counties: [
+            'Beaver',
+            'Box Elder',
+            'Carbon',
+            'Daggett',
+            'Duchesne',
+            'Emery',
+            'Garfield',
+            'Grand',
+            'Iron',
+            'Juab',
+            'Millard',
+            'Piute',
+            'Rich',
+            'San Juan',
+            'Sanpete',
+            'Sevier',
+            'Tooele',
+            'Uintah',
+            'Utah',
+            'Washington',
+            'Wayne',
+            'Kane'
+        ],
         featureClassNames: {
             counties: 'SGID10.Boundaries.Counties',
             cities: 'SGID10.BOUNDARIES.Municipalities_Carto',
@@ -122,4 +153,3 @@ define(['dojo/has', 'dojo/request/xhr', 'esri/config'], function (has, xhr, esri
 
     return window.AGRC;
 });
-//# sourceMappingURL=config.js.map

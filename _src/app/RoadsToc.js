@@ -1,4 +1,38 @@
-define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/form/Select', 'dijit/_TemplatedMixin', 'dijit/_WidgetBase', 'dijit/_WidgetsInTemplateMixin', 'dojo/dom-class', 'dojo/query', 'dojo/request/xhr', 'dojo/text!app/templates/RoadsToc.html', 'dojo/_base/declare', 'esri/layers/ArcGISDynamicMapServiceLayer'], function (AttributeTable, config, _GetSubLayersMixin, Select, _TemplatedMixin, _WidgetBase, _WidgetsInTemplateMixin, domClass, query, xhr, template, declare, ArcGISDynamicMapServiceLayer) {
+define([
+    'app/AttributeTable',
+    'app/config',
+    'app/_GetSubLayersMixin',
+
+    'dijit/form/Select',
+    'dijit/_TemplatedMixin',
+    'dijit/_WidgetBase',
+    'dijit/_WidgetsInTemplateMixin',
+
+    'dojo/dom-class',
+    'dojo/query',
+    'dojo/request/xhr',
+    'dojo/text!app/templates/RoadsToc.html',
+    'dojo/_base/declare',
+
+    'esri/layers/ArcGISDynamicMapServiceLayer'
+], function (
+    AttributeTable,
+    config,
+    _GetSubLayersMixin,
+
+    Select,
+    _TemplatedMixin,
+    _WidgetBase,
+    _WidgetsInTemplateMixin,
+
+    domClass,
+    query,
+    xhr,
+    template,
+    declare,
+
+    ArcGISDynamicMapServiceLayer
+) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, _GetSubLayersMixin], {
         widgetsInTemplate: true,
         templateString: template,
@@ -27,11 +61,11 @@ define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/for
         // map: Map
         map: null,
 
-        constructor: function constructor(params) {
+        constructor: function (params) {
             // set layer for _GetSubLayersMixin
             this.getSubLayersRoadsLayer = params.layer;
         },
-        postCreate: function postCreate() {
+        postCreate: function () {
             // summary:
             //      description
             console.log('app/RoadsToc:constructor', arguments);
@@ -40,7 +74,7 @@ define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/for
 
             this.setLegend();
         },
-        login: function login() {
+        login: function () {
             // summary:
             //      description
             // param or return
@@ -63,7 +97,7 @@ define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/for
                 this.legendPhotos.src = 'data:image/png;base64,' + photos;
             }.bind(this));
         },
-        wireEvents: function wireEvents() {
+        wireEvents: function () {
             // summary:
             //      description
             console.log('app/RoadsToc:wireEvents', arguments);
@@ -72,7 +106,7 @@ define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/for
             this.connect(this.dCheckbox, 'onClick', this.refreshVisibility);
             this.connect(this.photoCheckbox, 'onClick', this.togglePhotos);
         },
-        togglePhotos: function togglePhotos() {
+        togglePhotos: function () {
             // summary:
             //      description
             // param or return
@@ -92,7 +126,7 @@ define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/for
                 this.photosLayer.hide();
             }
         },
-        setLegend: function setLegend() {
+        setLegend: function () {
             // summary:
             //      sets the image data for the legend images
             console.log('app/RoadsToc:setLegend', arguments);
@@ -110,7 +144,7 @@ define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/for
                 that.legendD.src = 'data:image/png;base64,' + d;
             });
         },
-        selectCounty: function selectCounty(county) {
+        selectCounty: function (county) {
             // summary:
             //      description
             // county: String
@@ -138,7 +172,7 @@ define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/for
                 this.dTable = null;
             }
         },
-        refreshVisibility: function refreshVisibility() {
+        refreshVisibility: function () {
             // summary:
             //      description
             console.log('app/RoadsToc:refreshVisibility', arguments);
@@ -161,7 +195,7 @@ define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/for
             }
             this.layer.setVisibleLayers(visibleLayers);
         },
-        onOpenTableClick: function onOpenTableClick(evt) {
+        onOpenTableClick: function (evt) {
             // summary:
             //      handles the user clicking on the open table links
             console.log('app/RoadsToc:onOpenTableClick', arguments);
@@ -171,7 +205,7 @@ define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/for
 
             this.openAttributeTable(evt.target);
         },
-        openAttributeTable: function openAttributeTable(node) {
+        openAttributeTable: function (node) {
             // summary:
             //      creates a new attributes table object if needed and then opens it.
             console.log('app/RoadsToc:openAttributeTable', arguments);
@@ -190,4 +224,3 @@ define(['app/AttributeTable', 'app/config', 'app/_GetSubLayersMixin', 'dijit/for
         }
     });
 });
-//# sourceMappingURL=RoadsToc.js.map

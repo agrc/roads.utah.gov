@@ -1,4 +1,48 @@
-define(['app/config', 'app/_GetSubLayersMixin', 'app/_QueryTaskMixin', 'dijit/Dialog', 'dijit/registry', 'dojo/data/ItemFileReadStore', 'dojo/dom-geometry', 'dojo/string', 'dojo/text!app/html/AttributeTableDialogContent.html', 'dojo/_base/Color', 'dojo/_base/declare', 'dojo/_base/lang', 'dojox/grid/DataGrid', 'esri/layers/ArcGISDynamicMapServiceLayer', 'esri/symbols/SimpleLineSymbol', 'esri/tasks/query', 'esri/tasks/QueryTask'], function (config, _GetSubLayersMixin, _QueryTaskMixin, Dialog, registry, ItemFileReadStore, domGeometry, dojoString, attributeTableDialogContent, Color, declare, lang, DataGrid, ArcGISDynamicMapServiceLayer, SimpleLineSymbol, Query, QueryTask) {
+define([
+    'app/config',
+    'app/_GetSubLayersMixin',
+    'app/_QueryTaskMixin',
+
+    'dijit/Dialog',
+    'dijit/registry',
+
+    'dojo/data/ItemFileReadStore',
+    'dojo/dom-geometry',
+    'dojo/string',
+    'dojo/text!app/html/AttributeTableDialogContent.html',
+    'dojo/_base/Color',
+    'dojo/_base/declare',
+    'dojo/_base/lang',
+
+    'dojox/grid/DataGrid',
+
+    'esri/layers/ArcGISDynamicMapServiceLayer',
+    'esri/symbols/SimpleLineSymbol',
+    'esri/tasks/query',
+    'esri/tasks/QueryTask'
+], function (
+    config,
+    _GetSubLayersMixin,
+    _QueryTaskMixin,
+
+    Dialog,
+    registry,
+
+    ItemFileReadStore,
+    domGeometry,
+    dojoString,
+    attributeTableDialogContent,
+    Color,
+    declare,
+    lang,
+
+    DataGrid,
+
+    ArcGISDynamicMapServiceLayer,
+    SimpleLineSymbol,
+    Query,
+    QueryTask
+) {
     return declare([_GetSubLayersMixin, _QueryTaskMixin], {
         // description:
         //      displays the attribute table of the passed in layer
@@ -32,7 +76,8 @@ define(['app/config', 'app/_GetSubLayersMixin', 'app/_QueryTaskMixin', 'dijit/Di
         // layer: Layer
         layer: null,
 
-        constructor: function constructor(county, roadType, layer) {
+
+        constructor: function (county, roadType, layer) {
             // summary:
             //    Constructor method
             // county: String
@@ -47,7 +92,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'app/_QueryTaskMixin', 'dijit/Di
             this.getSubLayersRoadsLayer = layer;
 
             // query for data that will populate data grid
-            var i = this.roadType === 'B' ? 0 : 1;
+            var i = (this.roadType === 'B') ? 0 : 1;
             this.url = dojoString.substitute(config.urls.roadsSecureUrl + '/${0}', [this.getSubLayers(this.county)[i]]);
 
             this.executeQueryTask();
@@ -58,9 +103,10 @@ define(['app/config', 'app/_GetSubLayersMixin', 'app/_QueryTaskMixin', 'dijit/Di
                 returnGeometry: true
             });
 
-            this.symbolLine = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255, 255, 0]), 5);
+            this.symbolLine = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                new Color([255, 255, 0]), 5);
         },
-        executeQueryTask: function executeQueryTask() {
+        executeQueryTask: function () {
             // summary:
             //      sets up and executes the query task pointing to the correct layer it
             console.log('app/AttributeTable:executeQueryTask', arguments);
@@ -82,7 +128,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'app/_QueryTaskMixin', 'dijit/Di
 
             task.execute(query);
         },
-        buildDialog: function buildDialog() {
+        buildDialog: function () {
             // summary:
             //      creates the dialog and grid
             console.log('app/AttributeTable:buildDialog', arguments);
@@ -121,17 +167,19 @@ define(['app/config', 'app/_GetSubLayersMixin', 'app/_QueryTaskMixin', 'dijit/Di
                 }
             }
             this.grid = new DataGrid({
-                structure: [{
-                    noscroll: true,
-                    cells: noscrollFlds
-                }, {
-                    cells: flds
-                }],
+                structure: [
+                    {
+                        noscroll: true,
+                        cells: noscrollFlds
+                    }, {
+                        cells: flds
+                    }
+                ],
                 style: 'height: ' + (domGeometry.getContentBox(this.dialog.domNode).h - 83) + 'px;'
             }, id);
             this.grid.startup();
         },
-        onTaskComplete: function onTaskComplete(result) {
+        onTaskComplete: function (result) {
             // summary:
             //      updates the data store for the grid
             console.log('app/AttributeTable:onTaskComplete', arguments);
@@ -151,28 +199,28 @@ define(['app/config', 'app/_GetSubLayersMixin', 'app/_QueryTaskMixin', 'dijit/Di
             var store = new ItemFileReadStore({ data: data });
             this.grid.setStore(store);
         },
-        onQueryTaskError: function onQueryTaskError() {
+        onQueryTaskError: function () {
             // summary:
             //      handles error returned by query task
             console.log('app/AttributeTable:onQueryTaskError', arguments);
 
             window.alert('There was an error with the attribute table query!');
         },
-        show: function show() {
+        show: function () {
             // summary:
             //      displays the dialog
             console.log('app/AttributeTable:show', arguments);
 
             this.dialog.show();
         },
-        destroy: function destroy() {
+        destroy: function () {
             // summary:
             //      destroys the dialog and grid
             console.log('app/AttributeTable:destroy', arguments);
 
             this.dialog.destroyRecursive();
         },
-        onZoomClick: function onZoomClick() {
+        onZoomClick: function () {
             // summary:
             //      Fires when the user clicks the "Zoom To Selected Road" button
             console.log('app/AttributeTable:onZoomClick', arguments);
@@ -183,7 +231,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'app/_QueryTaskMixin', 'dijit/Di
             this.query.where = config.fields.roads.RD_ID[0] + " = '" + rdid + "'";
             this.qTask.execute(this.query);
         },
-        onQueryTaskComplete: function onQueryTaskComplete(result) {
+        onQueryTaskComplete: function (result) {
             // summary:
             //      Callback for query task to zoom to road
             console.log('app/AttributeTable:onQueryTaskComplete', arguments);
@@ -201,4 +249,3 @@ define(['app/config', 'app/_GetSubLayersMixin', 'app/_QueryTaskMixin', 'dijit/Di
         }
     });
 });
-//# sourceMappingURL=AttributeTable.js.map

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PLPCO Roads Viewer User Admin</title>
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <link rel='stylesheet' href='dijit/themes/dijit.css'>
+        <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="ijit/resources/authentication/UserAdmin.css">
+
+        <!-- JAVASCRIPT -->
+        <!-- build:template
+        <script data-dojo-config="deps:['app/packages']" src='dojo/dojo.js'></script>
+        /build -->
+
+        <!-- build:remove -->
+        <script data-dojo-config="isDebug: 1" src='dojo/dojo.js'></script>
+        <script src='app/packages.js'></script>
+        <!-- /build -->
+    </head>
+    <body>
+        <div id="widget-div"></div>
+
+        <script>
+            require({ baseUrl: './' }, [
+                'ijit/widgets/authentication/UserAdmin',
+                'app/config',
+                'dojo/domReady!'
+            ], function (UserAdmin, config) {
+                var ua = new UserAdmin({
+                    title: 'PLPCO Roads Viewer',
+                    appName: config.appName
+                }, 'widget-div');
+                ua.startup();
+            });
+        </script>
+    </body>
+</html>

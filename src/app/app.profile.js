@@ -1,16 +1,18 @@
 /* eslint-disable no-unused-vars, no-undef */
 var profile = {
     resourceTags: {
-        test: function (mid) {
-            return /\/Spec/.test(mid);
+        test: function test(mid) {
+            return (/\/Spec/.test(mid)
+            );
         },
-        copyOnly: function (filename, mid) {
-            return (/^app\/resources\//.test(mid) && !/\.css$/.test(filename));
+        copyOnly: function copyOnly(filename, mid) {
+            return (/^app\/resources\//.test(mid) && !/\.css$/.test(filename)
+            );
         },
-        amd: function (filename, mid) {
+        amd: function amd(filename, mid) {
             return !this.copyOnly(filename, mid) && /\.js$/.test(filename);
         },
-        miniExclude: function (filename, mid) {
+        miniExclude: function miniExclude(filename, mid) {
             return mid in {
                 'app/package': 1,
                 'app/tests/jasmineTestBootstrap': 1
@@ -18,3 +20,4 @@ var profile = {
         }
     }
 };
+//# sourceMappingURL=app.profile.js.map

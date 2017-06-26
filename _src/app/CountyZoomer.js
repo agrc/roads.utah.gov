@@ -1,4 +1,52 @@
-define(['agrc/modules/WebAPI', 'app/config', 'dijit/_TemplatedMixin', 'dijit/_WidgetBase', 'dijit/_WidgetsInTemplateMixin', 'dojo/dom-construct', 'dojo/Evented', 'dojo/on', 'dojo/query', 'dojo/text!app/templates/CountyZoomer.html', 'dojo/_base/declare', 'dojo/_base/lang', 'esri/Color', 'esri/geometry/Polygon', 'esri/layers/GraphicsLayer', 'esri/symbols/SimpleFillSymbol', 'esri/tasks/query', 'esri/tasks/QueryTask', 'bootstrap'], function (WebAPI, config, _TemplatedMixin, _WidgetBase, _WidgetsInTemplateMixin, domConstruct, Evented, on, query, template, declare, lang, Color, Polygon, GraphicsLayer, SimpleFillSymbol, Query, QueryTask) {
+define([
+    'agrc/modules/WebAPI',
+
+    'app/config',
+
+    'dijit/_TemplatedMixin',
+    'dijit/_WidgetBase',
+    'dijit/_WidgetsInTemplateMixin',
+
+    'dojo/dom-construct',
+    'dojo/Evented',
+    'dojo/on',
+    'dojo/query',
+    'dojo/text!app/templates/CountyZoomer.html',
+    'dojo/_base/declare',
+    'dojo/_base/lang',
+
+    'esri/Color',
+    'esri/geometry/Polygon',
+    'esri/layers/GraphicsLayer',
+    'esri/symbols/SimpleFillSymbol',
+    'esri/tasks/query',
+    'esri/tasks/QueryTask',
+
+    'bootstrap'
+], function (
+    WebAPI,
+
+    config,
+
+    _TemplatedMixin,
+    _WidgetBase,
+    _WidgetsInTemplateMixin,
+
+    domConstruct,
+    Evented,
+    on,
+    query,
+    template,
+    declare,
+    lang,
+
+    Color,
+    Polygon,
+    GraphicsLayer,
+    SimpleFillSymbol,
+    Query,
+    QueryTask
+) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, Evented], {
         widgetsInTemplate: true,
         templateString: template,
@@ -8,7 +56,9 @@ define(['agrc/modules/WebAPI', 'app/config', 'dijit/_TemplatedMixin', 'dijit/_Wi
         maskTask: null,
 
         // maskSymbol: SimpleFillSymbol
-        maskSymbol: new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, null, new Color([0, 0, 0, 0.5])),
+        maskSymbol: new SimpleFillSymbol(
+            SimpleFillSymbol.STYLE_SOLID,
+            null, new Color([0, 0, 0, 0.5])),
 
         // gLayer: GraphicsLayer
         //      The graphics layer that the mask graphic is put into
@@ -18,12 +68,13 @@ define(['agrc/modules/WebAPI', 'app/config', 'dijit/_TemplatedMixin', 'dijit/_Wi
         //      key used with local storage
         currentCountyKey: 'currentCounty',
 
+
         // Params passed in via the constructor
 
         // map: esri.Map
         map: null,
 
-        constructor: function constructor(params) {
+        constructor: function (params) {
             console.log('app/CountyZoomer:constructor', arguments);
 
             // create new graphics layer and add to map
@@ -31,7 +82,7 @@ define(['agrc/modules/WebAPI', 'app/config', 'dijit/_TemplatedMixin', 'dijit/_Wi
             this.gLayer = new GraphicsLayer();
             params.map.addLayer(this.gLayer);
         },
-        postCreate: function postCreate() {
+        postCreate: function () {
             console.log('app/CountyZoomer:postCreate', arguments);
 
             var currentCounty = window.localStorage.getItem(this.currentCountyKey);
@@ -61,14 +112,14 @@ define(['agrc/modules/WebAPI', 'app/config', 'dijit/_TemplatedMixin', 'dijit/_Wi
                 this.zoom(currentCounty);
             }
         },
-        show: function show() {
+        show: function () {
             // summary:
             //      shows the dialog
             console.log('app/CountyZoomer:show', arguments);
 
             $(this.dialog).modal('show');
         },
-        hide: function hide() {
+        hide: function () {
             // summary:
             //      hides the dialog
             // param or return
@@ -76,7 +127,7 @@ define(['agrc/modules/WebAPI', 'app/config', 'dijit/_TemplatedMixin', 'dijit/_Wi
 
             $(this.dialog).modal('hide');
         },
-        onQueryComplete: function onQueryComplete(features) {
+        onQueryComplete: function (features) {
             // summary:
             //      description
             console.log('app/CountyZoomer:onQueryComplete', arguments);
@@ -89,14 +140,14 @@ define(['agrc/modules/WebAPI', 'app/config', 'dijit/_TemplatedMixin', 'dijit/_Wi
                 window.alert('No features found for query: ' + this.where);
             }
         },
-        onError: function onError() {
+        onError: function () {
             // summary:
             //      description
             console.log('app/CountyZoomer:onError', arguments);
 
             window.alert('There was an error with the county query!');
         },
-        zoom: function zoom(countyName) {
+        zoom: function (countyName) {
             // summary:
             //      zooms to the county
             // countyName: String
@@ -121,7 +172,7 @@ define(['agrc/modules/WebAPI', 'app/config', 'dijit/_TemplatedMixin', 'dijit/_Wi
             queryParams.maxAllowableOffset = 50;
             this.maskTask.execute(queryParams);
         },
-        onCountyClick: function onCountyClick(evt) {
+        onCountyClick: function (evt) {
             // summary:
             //      fires off the webapi request
             console.log('app/CountyZoomer:onCountyClick', arguments);
@@ -130,7 +181,7 @@ define(['agrc/modules/WebAPI', 'app/config', 'dijit/_TemplatedMixin', 'dijit/_Wi
 
             this.hide();
         },
-        onMaskComplete: function onMaskComplete(evt) {
+        onMaskComplete: function (evt) {
             // summary:
             //      description
             console.log('app/CountyZoomer:onMaskComplete', arguments);
@@ -144,4 +195,3 @@ define(['agrc/modules/WebAPI', 'app/config', 'dijit/_TemplatedMixin', 'dijit/_Wi
         }
     });
 });
-//# sourceMappingURL=CountyZoomer.js.map

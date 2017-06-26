@@ -1,4 +1,8 @@
-define(['dojo/_base/declare'], function (declare) {
+define([
+    'dojo/_base/declare'
+], function (
+    declare
+) {
     return declare(null, {
         // summary:
         //      Provides functionality for finding the matching county group layer and
@@ -8,7 +12,7 @@ define(['dojo/_base/declare'], function (declare) {
         // getSubLayersRoadsLayer: esri.layers.ArcGISDynamicMapServiceLayer
         getSubLayersRoadsLayer: null,
 
-        getSubLayers: function getSubLayers(county) {
+        getSubLayers: function (county) {
             // summary:
             //      description
             console.log('app/_GetSubLayersMixin:getSubLayers', arguments);
@@ -32,4 +36,3 @@ define(['dojo/_base/declare'], function (declare) {
         }
     });
 });
-//# sourceMappingURL=_GetSubLayersMixin.js.map

@@ -1,4 +1,52 @@
-define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-construct', 'dojo/text!app/html/PhotosTemplate.html', 'dojo/text!app/html/RoadsTemplateGeneral.html', 'dojo/text!app/html/RoadsTemplateSecure.html', 'dojo/_base/Color', 'dojo/_base/declare', 'dojo/_base/lang', 'esri/dijit/Popup', 'esri/InfoTemplate', 'esri/layers/ArcGISDynamicMapServiceLayer', 'esri/layers/GraphicsLayer', 'esri/symbols/SimpleLineSymbol', 'esri/symbols/SimpleMarkerSymbol', 'esri/tasks/IdentifyParameters', 'esri/tasks/IdentifyTask', 'esri/tasks/query', 'esri/tasks/QueryTask'], function (config, _GetSubLayersMixin, registry, domConstruct, photosTemplate, roadsTemplateGeneral, roadsTemplateSecure, Color, declare, lang, Popup, InfoTemplate, ArcGISDynamicMapServiceLayer, GraphicsLayer, SimpleLineSymbol, SimpleMarkerSymbol, IdentifyParameters, IdentifyTask, Query, QueryTask) {
+define([
+    'app/config',
+    'app/_GetSubLayersMixin',
+
+    'dijit/registry',
+
+    'dojo/dom-construct',
+    'dojo/text!app/html/PhotosTemplate.html',
+    'dojo/text!app/html/RoadsTemplateGeneral.html',
+    'dojo/text!app/html/RoadsTemplateSecure.html',
+    'dojo/_base/Color',
+    'dojo/_base/declare',
+    'dojo/_base/lang',
+
+    'esri/dijit/Popup',
+    'esri/InfoTemplate',
+    'esri/layers/ArcGISDynamicMapServiceLayer',
+    'esri/layers/GraphicsLayer',
+    'esri/symbols/SimpleLineSymbol',
+    'esri/symbols/SimpleMarkerSymbol',
+    'esri/tasks/IdentifyParameters',
+    'esri/tasks/IdentifyTask',
+    'esri/tasks/query',
+    'esri/tasks/QueryTask'
+], function (
+    config,
+    _GetSubLayersMixin,
+
+    registry,
+
+    domConstruct,
+    photosTemplate,
+    roadsTemplateGeneral,
+    roadsTemplateSecure,
+    Color,
+    declare,
+    lang,
+
+    Popup,
+    InfoTemplate,
+    ArcGISDynamicMapServiceLayer,
+    GraphicsLayer,
+    SimpleLineSymbol,
+    SimpleMarkerSymbol,
+    IdentifyParameters,
+    IdentifyTask,
+    Query,
+    QueryTask
+) {
     return declare([_GetSubLayersMixin], {
         // summary:
         //      Controls the identify functionality for the road segments
@@ -61,9 +109,10 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
         // roadsPane: esri.TitlePane
         roadsPane: null,
 
+
         // parameters passed in via the constructor
 
-        constructor: function constructor() {
+        constructor: function () {
             // summary:
             //      creates the query and query task
             console.log('app/Identify:constructor', arguments);
@@ -73,7 +122,8 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
             this.roadsPane = registry.byId('roads-identify-pane');
             this.roadsPane.set('content', this.roadsPanePlaceHolderText);
 
-            this.roadSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255, 255, 0]), 5);
+            this.roadSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                new Color([255, 255, 0]), 5);
             this.photoSymbol = new SimpleMarkerSymbol().setSize(10).setColor(new Color([255, 255, 0]));
             this.photosTemplate = new InfoTemplate('${PHOTO_NAME}', photosTemplate);
 
@@ -86,7 +136,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
 
             this.roadsTemplate = new InfoTemplate('${' + config.fields.roads.S_NAME[0] + '}', roadsTemplateGeneral);
         },
-        initIdentifyTask: function initIdentifyTask(url) {
+        initIdentifyTask: function (url) {
             // summary:
             //      sets up the identify task
             // param or return
@@ -97,14 +147,14 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
             this.iTask.on('error', lang.hitch(this, this.onTaskError));
             this.iTask.on('complete', lang.hitch(this, this.onIdentifyTaskComplete));
         },
-        selectCounty: function selectCounty(county) {
+        selectCounty: function (county) {
             // summary:
             //      description
             console.log('app/Identify:selectCounty', arguments);
 
             this.currentCounty = county;
 
-            var addLayerIdToUrl = function addLayerIdToUrl(id) {
+            var addLayerIdToUrl = function (id) {
                 return config.urls.roadsSecureUrl.replace('MapServer', 'MapServer/' + id);
             };
 
@@ -123,7 +173,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
             this.qTaskD.on('error', lang.hitch(this, this.onTaskError));
             this.qTaskD.on('complete', lang.hitch(this, this.onQueryTaskComplete));
         },
-        getPopup: function getPopup() {
+        getPopup: function () {
             // summary:
             //      creates a popup and returns it
             // returns: esri.dijit.Popup
@@ -135,7 +185,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
 
             return this.popup;
         },
-        onMapClick: function onMapClick(clickEvt) {
+        onMapClick: function (clickEvt) {
             // summary:
             //      description
             // clickEvt: {}
@@ -166,7 +216,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
             this.iParams.mapExtent = config.app.map.extent;
             this.iTask.execute(this.iParams);
         },
-        onTaskError: function onTaskError() {
+        onTaskError: function () {
             // summary:
             //      fires when the query task returns an error
             console.log('app/Identify:onTaskError', arguments);
@@ -175,7 +225,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
 
             config.app.map.hideLoader();
         },
-        onIdentifyTaskComplete: function onIdentifyTaskComplete(response) {
+        onIdentifyTaskComplete: function (response) {
             // summary:
             //      displays graphic on map and fires query task if appropriate
             // iResults: IdentifyResult[]
@@ -212,7 +262,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
 
             config.app.map.hideLoader();
         },
-        showRoad: function showRoad(graphic, roadClass) {
+        showRoad: function (graphic, roadClass) {
             // summary:
             //      shows popup with appropriate attributes
             // graphic: esri.Graphic
@@ -229,7 +279,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
                 this.showRoadPane(graphic, this.roadsTemplate);
             }
         },
-        fireQueryTask: function fireQueryTask(lName, g) {
+        fireQueryTask: function (lName, g) {
             // summary:
             //      description
             // lName: String
@@ -246,7 +296,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
                 this.qTaskD.execute(this.query);
             }
         },
-        onQueryTaskComplete: function onQueryTaskComplete(result) {
+        onQueryTaskComplete: function (result) {
             // summary:
             //      description
             console.log('app/Identify:onQueryTaskComplete', arguments);
@@ -261,7 +311,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
 
             config.app.map.hideLoader();
         },
-        login: function login() {
+        login: function () {
             // summary:
             //      description
             // param or return
@@ -284,7 +334,7 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
 
             this.selectCounty(this.currentCounty);
         },
-        showPopup: function showPopup(g, template) {
+        showPopup: function (g, template) {
             // summary:
             //      sets the infotemplate, populates the popup and shows it
             console.log('app/Identify:showPopup', arguments);
@@ -294,14 +344,14 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
             this.popup.setContent(g.getContent());
             this.popup.show(this.mapClickPoint);
         },
-        onPopupHide: function onPopupHide() {
+        onPopupHide: function () {
             // summary:
             //      clears the graphics when the popup is closed
             console.log('app/Identify:onPopupHide', arguments);
 
             this.gLayer.clear();
         },
-        showRoadPane: function showRoadPane(graphic, template) {
+        showRoadPane: function (graphic, template) {
             // summary:
             //      opens the sidebar pane, if needed and displays
             //      the data for the selected road
@@ -317,4 +367,3 @@ define(['app/config', 'app/_GetSubLayersMixin', 'dijit/registry', 'dojo/dom-cons
         }
     });
 });
-//# sourceMappingURL=Identify.js.map
