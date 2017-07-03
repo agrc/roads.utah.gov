@@ -1,5 +1,8 @@
 {
     extends: "agrc",
+    globals: {
+        YT: true
+    },
     rules: {
         'no-alert': 0,
         'no-magic-numbers': 0
