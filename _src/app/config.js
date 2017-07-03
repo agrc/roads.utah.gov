@@ -96,7 +96,9 @@ define([
             roadsUrl: roadsUrl,
             roadsSecureUrl: localBase + 'RoadsSecure/MapServer',
 
-            maskQueryTaskUrl: backgroundLayers + '/0'
+            maskQueryTaskUrl: backgroundLayers + '/0',
+            wildernessStudyAreas: backgroundLayers + '/1',
+            redRockAreas: backgroundLayers + '/2'
             /* eslint-enable max-len */
         },
         counties: [
