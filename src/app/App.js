@@ -23,6 +23,7 @@ define([
     'esri/layers/ArcGISDynamicMapServiceLayer',
     'esri/layers/ArcGISImageServiceLayer',
     'esri/layers/ArcGISTiledMapServiceLayer',
+    'esri/layers/FeatureLayer',
     'esri/layers/ImageParameters',
     'esri/layers/VectorTileLayer',
     'esri/layers/WebTiledLayer',
@@ -63,6 +64,7 @@ define([
     ArcGISDynamicMapServiceLayer,
     ArcGISImageServiceLayer,
     ArcGISTiledMapServiceLayer,
+    FeatureLayer,
     ImageParameters,
     VectorTileLayer,
     WebTiledLayer,
@@ -273,6 +275,16 @@ define([
                         id: 'Utah PLSS',
                         Factory: VectorTileLayer,
                         url: config.urls.plss
+                    }, {
+                        id: 'BLM Wilderness Study Areas',
+                        Factory: FeatureLayer,
+                        url: config.urls.wildernessStudyAreas,
+                        opacity: 0.4
+                    }, {
+                        id: 'Red Rock Wilderness Areas',
+                        Factory: FeatureLayer,
+                        url: config.urls.redRockAreas,
+                        opacity: 0.4
                     }
                 ]
             });
