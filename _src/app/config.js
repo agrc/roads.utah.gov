@@ -1,4 +1,4 @@
-/* jshint maxlen:false */
+/* eslint-disable camelcase */
 define([
     'dojo/has',
     'dojo/request/xhr',
@@ -21,6 +21,7 @@ define([
     var roadsUrl = localBase + 'RoadsGeneral/MapServer';
     var fldREQUEST = 'REQUEST';
     var backgroundLayers = localBase + 'BackgroundLayers/MapServer';
+    var videos = localBase + 'Videos/MapServer';
 
     window.AGRC = {
         // version.: String
@@ -75,6 +76,11 @@ define([
             OBJECTID: 'OBJECTID',
             photos: {
                 HOTLINK: 'HOTLINK'
+            },
+            videos: {
+                GPX_Name: 'GPX_Name',
+                DateTimeS: 'DateTimeS',
+                Youtube_URL: 'Youtube_URL'
             }
         },
         urls: {
@@ -95,6 +101,8 @@ define([
             sherlockData: localBase + 'SherlockData/MapServer',
             roadsUrl: roadsUrl,
             roadsSecureUrl: localBase + 'RoadsSecure/MapServer',
+            videoRoutes: videos + '/0',
+            videoLogs: videos + '/1',
 
             maskQueryTaskUrl: backgroundLayers + '/0',
             wildernessStudyAreas: backgroundLayers + '/1',
@@ -129,7 +137,11 @@ define([
             counties: 'SGID10.Boundaries.Counties',
             cities: 'SGID10.BOUNDARIES.Municipalities_Carto',
             gnis: 'SGID10.LOCATION.PlaceNamesGNIS2010'
-        }
+        },
+        topics: {
+            updateVideoPosition: 'update-video-position'
+        },
+        videoMapZoomLevel: 17
     };
 
     if (has('agrc-build') === 'prod') {

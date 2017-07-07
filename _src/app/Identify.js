@@ -1,18 +1,22 @@
 define([
     'app/config',
+    'app/Video',
     'app/_GetSubLayersMixin',
 
     'dijit/registry',
 
     'dojo/dom-construct',
+    'dojo/promise/all',
     'dojo/text!app/html/PhotosTemplate.html',
     'dojo/text!app/html/RoadsTemplateGeneral.html',
     'dojo/text!app/html/RoadsTemplateSecure.html',
+    'dojo/topic',
     'dojo/_base/Color',
     'dojo/_base/declare',
     'dojo/_base/lang',
 
     'esri/dijit/Popup',
+    'esri/graphic',
     'esri/InfoTemplate',
     'esri/layers/ArcGISDynamicMapServiceLayer',
     'esri/layers/GraphicsLayer',
@@ -24,19 +28,23 @@ define([
     'esri/tasks/QueryTask'
 ], function (
     config,
+    Video,
     _GetSubLayersMixin,
 
     registry,
 
     domConstruct,
+    all,
     photosTemplate,
     roadsTemplateGeneral,
     roadsTemplateSecure,
+    topic,
     Color,
     declare,
     lang,
 
     Popup,
+    Graphic,
     InfoTemplate,
     ArcGISDynamicMapServiceLayer,
     GraphicsLayer,
@@ -134,7 +142,13 @@ define([
 
             this.initIdentifyTask(config.urls.roadsUrl);
 
+            this.videoLogsTask = new QueryTask(config.urls.videoLogs);
+
             this.roadsTemplate = new InfoTemplate('${' + config.fields.roads.S_NAME[0] + '}', roadsTemplateGeneral);
+
+            this.videos = [];
+
+            topic.subscribe(config.topics.updateVideoPosition, this.updateVideoPosition.bind(this));
         },
         initIdentifyTask: function (url) {
             // summary:
@@ -185,6 +199,21 @@ define([
 
             return this.popup;
         },
+        updateVideoPosition(newGeometry) {
+            // summary:
+            //      updates the map with the current video position
+            console.log('app/Identify:updateVideoPosition', arguments);
+
+            if (this.videoGraphic) {
+                this.videoGraphic.geometry.update(newGeometry.x, newGeometry.y);
+                this.videoGraphic.draw();
+            } else {
+                this.videoGraphic = new Graphic(newGeometry, new SimpleMarkerSymbol().setColor([255, 255, 0, 0.5]));
+                config.app.map.graphics.add(this.videoGraphic);
+            }
+
+            config.app.map.centerAndZoom(newGeometry, config.videoMapZoomLevel);
+        },
         onMapClick: function (clickEvt) {
             // summary:
             //      description
@@ -194,6 +223,7 @@ define([
             this.mapClickPoint = clickEvt.mapPoint;
 
             config.app.map.graphics.clear();
+            this.videoGraphic = null;
 
             if (!this.gLayer) {
                 this.gLayer = new GraphicsLayer();
@@ -202,6 +232,7 @@ define([
 
             this.popup.hide();
             this.gLayer.clear();
+            this.videos.forEach(video => video.destroy());
             config.app.map.showLoader();
 
             var lyrIds = this.toc.layer.visibleLayers;
@@ -271,30 +302,48 @@ define([
 
             this.dissolveGraphic = graphic;
             this.dissolveGraphic.setSymbol(this.roadSymbol);
-            this.gLayer.add(this.dissolveGraphic);
+            if (this.gLayer) {
+                this.gLayer.add(this.dissolveGraphic);
+            }
 
             if (config.user) {
-                this.fireQueryTask(roadClass, graphic);
+                this.fireQueryTasks(roadClass, graphic);
             } else {
                 this.showRoadPane(graphic, this.roadsTemplate);
             }
         },
-        fireQueryTask: function (lName, g) {
+        fireQueryTasks: function (lName, g) {
             // summary:
             //      description
             // lName: String
             //      The name of the layer that was found in the roads service
             // g: esri.Graphic
-            console.log('app/Identify:fireQueryTask', arguments);
+            console.log('app/Identify:fireQueryTasks', arguments);
 
             var rdId = config.fields.roads.RD_ID[0];
             this.query.where = rdId + " = '" + g.attributes[rdId] + "'";
 
+            let def;
             if (lName === 'Class B') {
-                this.qTaskB.execute(this.query);
+                def = this.qTaskB.execute(this.query);
             } else {
-                this.qTaskD.execute(this.query);
+                def = this.qTaskD.execute(this.query);
             }
+
+            const videoQuery = new Query();
+            videoQuery.where = this.query.where;
+            videoQuery.outFields = ['*'];
+            all([this.videoLogsTask.execute(videoQuery), def]).then((resolves) => {
+                const videoResponse = resolves[0];
+                if (videoResponse.features.length > 0) {
+                    videoResponse.features.forEach((feature) => {
+                        const div = domConstruct.create('div', null, document.getElementById('videoContainer'));
+                        const video = new Video({ attributes: feature.attributes }, div);
+                        video.startup();
+                        this.videos.push(video);
+                    });
+                }
+            }, this.onTaskError.bind(this));
         },
         onQueryTaskComplete: function (result) {
             // summary:
@@ -363,7 +412,7 @@ define([
             }
 
             graphic.setInfoTemplate(template);
-            this.roadsPane.set('content', graphic.getContent());
+            this.roadsPane.set('content', `${graphic.getContent()} <div id='videoContainer'></div>`);
         }
     });
 });

@@ -15,7 +15,6 @@ define([
     'dojo/dom-construct',
     'dojo/dom-style',
     'dojo/text!app/templates/App.html',
-    'dojo/topic',
     'dojo/_base/declare',
     'dojo/_base/lang',
 
@@ -56,7 +55,6 @@ define([
     domConstruct,
     domStyle,
     template,
-    topic,
     declare,
     lang,
 
@@ -133,67 +131,11 @@ define([
 
             this.identify = new Identify();
 
-            this.setupVideos();
-
             window.addEventListener('unload', () => {
                 if (this.popupWindow) {
                     this.popupWindow.close();
                 }
             });
-        },
-        setupVideos() {
-
-        },
-        popupVideo() {
-            this.popupWindow = window.open(null, 'roadsVideo', 'width=600,height=350,location=0');
-
-            this.popupWindow.document.addEventListener('DOMContentLoaded', () => {
-                console.log('POPUP: dom loaded');
-            });
-
-            /* eslint-disable no-use-before-define */
-            var playerDiv = domConstruct.create('div', {
-                innerHTML: 'test'
-            }, this.popupWindow.document.body);
-            var player = new YT.Player(playerDiv, {
-                height: '200',
-                width: '300',
-                videoId: 'bYIEzemMsIQ',
-                events: {
-                    onReady: onPlayerReady
-                }
-            });
-
-            const positions = {};
-
-            const onPlayerReady = function () {
-                console.log('ready');
-                player.playVideo();
-
-                window.setInterval(() => {
-                    const pos = positions[Math.round(player.getCurrentTime())];
-                    if (pos) {
-                        console.log(pos);
-                        // var newGraphic = graphic.clone();
-                        // newGraphic.set('geometry', new Point({
-                        //     longitude: pos.long,
-                        //     latitude: pos.lat
-                        // }));
-                        // view.graphics.remove(graphic);
-                        // view.graphics.add(newGraphic);
-                        // graphic = newGraphic;
-                        // view.goTo({
-                        //     target: graphic,
-                        //     scale: 5000
-                        // });
-                        // console.log(graphic);
-                    }
-                }, 1000);
-            };
-
-            window.setTimeout(onPlayerReady, 2000);
-
-            console.log('POPUP: window created');
         },
         initMap: function (evt) {
             // summary:
@@ -411,9 +353,13 @@ define([
             var that = this;
             function onZoom(graphic) {
                 that.identify.popup.hide();
-                that.identify.gLayer.clear();
+                if (that.identify.gLayer) {
+                    that.identify.gLayer.clear();
+                }
                 that.sherlocks.forEach(function (zoom) {
-                    zoom._graphicsLayer.clear();
+                    if (zoom._graphicsLayer) {
+                        zoom._graphicsLayer.clear();
+                    }
                 });
                 function showPopup(g) {
                     that.identify.showRoad(g,

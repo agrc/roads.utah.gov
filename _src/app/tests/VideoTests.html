@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Tests</title>
+
+    <!-- META TAGS -->
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../resources/App.css">
+    <style type='text/css'>
+        body {
+            padding: 50px;
+        }
+    </style>
+
+    <!-- JAVASCRIPT -->
+    <script type='text/javascript' src="../../dojo/dojo.js"></script>
+    <script type='text/javascript' src='../../app/packages.js'></script>
+    <script type='text/javascript' src='../../jquery/dist/jquery.js'></script>
+    <script src='https://www.youtube.com/iframe_api'></script>
+    <script type="text/javascript">
+        /* eslint-disable camelcase, no-useless-escape */
+        var baseUrl = window.location.pathname.replace(/\/[^\/]+$/, '') + '/../../';
+        var widgetUnderTest;
+
+        require({
+            baseUrl: baseUrl
+        }, [
+            'app/config',
+            'app/Video',
+            'ijit/widgets/authentication/LoginRegister',
+
+            'dojo/domReady!'
+        ], function (config, Video, LoginRegister) {
+            const login = new LoginRegister({
+                appName: config.appName,
+                logoutDiv: document.getElementById('logoutDiv'),
+                showOnLoad: true,
+                securedServicesBaseUrl: config.urls.localBase
+            });
+            login.startup();
+            login.on('sign-in-success', () => {
+                widgetUnderTest = new Video({
+                    attributes: {
+                        GPX_Name: 'RD090050',
+                        Youtube_URL: 'https://youtu.be/4VLg3nhoOBY'
+                    }
+                }, 'node');
+                widgetUnderTest.startup();
+            });
+        });
+</script>
+</head>
+<body>
+    <div id="node"></div>
+    <div id="logoutDiv"></div>
+</body>
+</html>
