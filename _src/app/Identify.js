@@ -224,8 +224,8 @@ define([
 
             this.mapClickPoint = clickEvt.mapPoint;
 
-            config.app.map.graphics.clear();
             this.videoGraphic = null;
+            config.app.map.graphics.clear();
 
             if (!this.gLayer) {
                 this.gLayer = new GraphicsLayer();

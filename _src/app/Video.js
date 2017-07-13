@@ -173,6 +173,9 @@ define([
                 iframe.width = '100%';
                 iframe.height = '100%';
             }, 500);
+        },
+        destroy() {
+            window.clearInterval(this.intervalId);
         }
     });
 });
