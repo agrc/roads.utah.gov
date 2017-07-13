@@ -74,7 +74,7 @@ define([
                     lookup[seconds - start] = point.geometry;
                 } else {
                     start = seconds;
-                    this.dateSpan.innerHTML = date;
+                    this.dateSpan.innerHTML = date.toDateString();
                     lookup[0] = point.geometry;
                 }
             });
