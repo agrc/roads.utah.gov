@@ -4,6 +4,7 @@ define([
     'dijit/_TemplatedMixin',
     'dijit/_WidgetBase',
 
+    'dojo/dom-construct',
     'dojo/text!app/templates/Video.html',
     'dojo/topic',
     'dojo/_base/declare',
@@ -16,6 +17,7 @@ define([
     _TemplatedMixin,
     _WidgetBase,
 
+    domConstruct,
     template,
     topic,
     declare,
@@ -55,6 +57,12 @@ define([
                 }
             }, () => {
                 window.alert('There was an error getting the video points!');
+            });
+
+            window.addEventListener('unload', () => {
+                if (this.popupWindow) {
+                    this.popupWindow.close();
+                }
             });
 
             this.inherited(arguments);
@@ -101,17 +109,18 @@ define([
             // event: Event Object (data property holds reference to state)
             console.log('app.Video:onPlayerStateChange', arguments);
 
+            if (this.intervalId) {
+                window.clearInterval(this.intervalId);
+            }
+
             if (event.data === YT.PlayerState.PLAYING) {
+                const player = event.target;
                 this.intervalId = window.setInterval(() => {
-                    const position = this.pointsLookup[Math.round(this.player.getCurrentTime())];
+                    const position = this.pointsLookup[Math.round(player.getCurrentTime())];
                     if (position) {
                         topic.publish(config.topics.updateVideoPosition, position);
-                        console.debug(Math.round(this.player.getCurrentTime()));
-                        console.debug('position', position);
                     }
-                }, 500);
-            } else {
-                window.clearInterval(this.intervalId);
+                }, 1000);
             }
         },
         getIDFromUrl(url) {
@@ -125,59 +134,48 @@ define([
             }
 
             return url.split('/').pop();
+        },
+        popout() {
+            // summary:
+            //      pops out the video into a separate window
+            console.log('app.Video:popout', arguments);
+
+            this.player.pauseVideo();
+
+            this.popupWindow = window.open(null, 'roadsVideo', 'width=640,height=390,location=0');
+            this.popupWindow.document.body.style.margin = 0;
+            this.popupWindow.addEventListener('unload', () => {
+                console.log('unloading');
+                window.clearInterval(this.intervalId);
+                console.log('unloaded');
+            });
+
+            const id = this.getIDFromUrl(this.attributes[config.fields.videos.Youtube_URL]);
+            const iframe = domConstruct.create('iframe', {
+                width: 640,
+                height: 390,
+                frameborder: 0,
+                src: `https://www.youtube.com/embed/${id}?enablejsapi=1`
+            }, this.popupWindow.document.body);
+
+            /* eslint-disable no-new */
+            const that = this;
+
+            new YT.Player(iframe, {
+                events: {
+                    onStateChange: this.onPlayerStateChange.bind(this),
+                    onReady: (event) => {
+                        event.target.seekTo(that.player.getCurrentTime(), true);
+                    }
+                }
+            });
+            /* eslint-enable no-new */
+
+            // need to wait a bit for the window to finish laying out
+            window.setTimeout(() => {
+                iframe.width = '100%';
+                iframe.height = '100%';
+            }, 500);
         }
     });
 });
-
-//
-        // popupVideo() {
-        //     this.popupWindow = window.open(null, 'roadsVideo', 'width=600,height=350,location=0');
-        //
-        //     this.popupWindow.document.addEventListener('DOMContentLoaded', () => {
-        //         console.log('POPUP: dom loaded');
-        //     });
-        //
-        //     /* eslint-disable no-use-before-define */
-        //     var playerDiv = domConstruct.create('div', {
-        //         innerHTML: 'test'
-        //     }, this.popupWindow.document.body);
-        //     var player = new YT.Player(playerDiv, {
-        //         height: '200',
-        //         width: '300',
-        //         videoId: 'bYIEzemMsIQ',
-        //         events: {
-        //             onReady: onPlayerReady
-        //         }
-        //     });
-        //
-        //     const positions = {};
-        //
-        //     const onPlayerReady = function () {
-        //         console.log('ready');
-        //         player.playVideo();
-        //
-        //         window.setInterval(() => {
-        //             const pos = positions[Math.round(player.getCurrentTime())];
-        //             if (pos) {
-        //                 console.log(pos);
-        //                 // var newGraphic = graphic.clone();
-        //                 // newGraphic.set('geometry', new Point({
-        //                 //     longitude: pos.long,
-        //                 //     latitude: pos.lat
-        //                 // }));
-        //                 // view.graphics.remove(graphic);
-        //                 // view.graphics.add(newGraphic);
-        //                 // graphic = newGraphic;
-        //                 // view.goTo({
-        //                 //     target: graphic,
-        //                 //     scale: 5000
-        //                 // });
-        //                 // console.log(graphic);
-        //             }
-        //         }, 1000);
-        //     };
-        //
-        //     window.setTimeout(onPlayerReady, 2000);
-        //
-        //     console.log('POPUP: window created');
-        // },
