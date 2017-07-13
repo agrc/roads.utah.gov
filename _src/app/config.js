@@ -141,7 +141,8 @@ define([
         topics: {
             updateVideoPosition: 'update-video-position'
         },
-        videoMapZoomLevel: 17
+        videoMapZoomLevel: 17,
+        videoMarkerColor: 'rgba(231, 48, 48, 0.86)'
     };
 
     if (has('agrc-build') === 'prod' || has('agrc-build') === 'stage') {

@@ -209,7 +209,8 @@ define([
                 // updating the graphic in place in the graphics layer wasn't working.
                 config.app.map.graphics.remove(this.videoGraphic);
             } else {
-                this.videoGraphic = new Graphic(newGeometry, new SimpleMarkerSymbol().setColor([255, 255, 0, 0.5]));
+                this.videoGraphic = new Graphic(newGeometry,
+                    new SimpleMarkerSymbol().setColor(config.videoMarkerColor));
             }
 
             config.app.map.graphics.add(this.videoGraphic);
