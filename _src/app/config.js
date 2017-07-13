@@ -144,14 +144,10 @@ define([
         videoMapZoomLevel: 17
     };
 
-    if (has('agrc-build') === 'prod') {
+    if (has('agrc-build') === 'prod' || has('agrc-build') === 'stage') {
         // roads.utah.gov
         window.AGRC.apiKey = 'AGRC-ECE34D2B897904';
         window.AGRC.quadWord = 'pancake-economy-raymond-sonic';
-    } else if (has('agrc-build') === 'stage') {
-        // test.mapserv.utah.gov
-        window.AGRC.quadWord = 'opera-event-little-pinball';
-        window.AGRC.apiKey = 'AGRC-AC122FA9671436';
     } else {
         // localhost
         xhr(require.baseUrl + 'secrets.json', {
