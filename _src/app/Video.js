@@ -142,12 +142,10 @@ define([
 
             this.player.pauseVideo();
 
-            this.popupWindow = window.open(null, 'roadsVideo', 'width=640,height=390,location=0');
+            this.popupWindow = window.open('', 'roadsVideo', 'width=640,height=390,location=0');
             this.popupWindow.document.body.style.margin = 0;
             this.popupWindow.addEventListener('unload', () => {
-                console.log('unloading');
                 window.clearInterval(this.intervalId);
-                console.log('unloaded');
             });
 
             const id = this.getIDFromUrl(this.attributes[config.fields.videos.Youtube_URL]);
@@ -159,19 +157,18 @@ define([
             }, this.popupWindow.document.body);
 
             /* eslint-disable no-new */
-            const that = this;
-
             new YT.Player(iframe, {
                 events: {
                     onStateChange: this.onPlayerStateChange.bind(this),
                     onReady: (event) => {
-                        event.target.seekTo(that.player.getCurrentTime(), true);
+                        event.target.seekTo(this.player.getCurrentTime(), true);
                     }
                 }
             });
             /* eslint-enable no-new */
 
             // need to wait a bit for the window to finish laying out
+            // otherwise the iframe has 0 height
             window.setTimeout(() => {
                 iframe.width = '100%';
                 iframe.height = '100%';
