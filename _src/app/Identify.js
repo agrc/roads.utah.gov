@@ -206,12 +206,13 @@ define([
 
             if (this.videoGraphic) {
                 this.videoGraphic.geometry.update(newGeometry.x, newGeometry.y);
-                this.videoGraphic.draw();
+                // updating the graphic in place in the graphics layer wasn't working.
+                config.app.map.graphics.remove(this.videoGraphic);
             } else {
                 this.videoGraphic = new Graphic(newGeometry, new SimpleMarkerSymbol().setColor([255, 255, 0, 0.5]));
-                config.app.map.graphics.add(this.videoGraphic);
             }
 
+            config.app.map.graphics.add(this.videoGraphic);
             config.app.map.centerAndZoom(newGeometry, config.videoMapZoomLevel);
         },
         onMapClick: function (clickEvt) {
