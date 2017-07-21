@@ -68,7 +68,7 @@ class PLPCOPallet(PLPCOBasePallet):
         super(PLPCOPallet, self).build(config)
 
         self.sgid = join(self.garage, 'SGID10.sde')
-        self.reference_data = join(self.garage, 'ReferenceData.gdb')
+        self.reference_data = join(self.staging_rack, 'ReferenceData.gdb')
 
         self.add_crate((photos_name, self.plpco_sde, self.plpco))
 
