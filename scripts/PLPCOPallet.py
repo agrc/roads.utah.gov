@@ -65,7 +65,7 @@ class PLPCOBasePallet(Pallet):
 
 class PLPCOPallet(PLPCOBasePallet):
     def build(self, config):
-        super(PLPCOPallet, self).build()
+        super(PLPCOPallet, self).build(config)
 
         self.sgid = join(self.garage, 'SGID10.sde')
         self.reference_data = join(self.garage, 'ReferenceData.gdb')
@@ -142,7 +142,7 @@ class PLPCOVideoPallet(PLPCOBasePallet):
 
 class PLPCORoadsPallet(PLPCOBasePallet):
     def build(self, config):
-        super(PLPCOBasePallet, self).build(config)
+        super(PLPCORoadsPallet, self).build(config)
 
         datasets = [county + '_B' for county in counties] + [county + '_D' for county in counties]
 
