@@ -1,7 +1,7 @@
 {
   "name": "roads.utah.gov",
   "description": "PLPCO Roads Viewer",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "main": "",
   "authors": [
     "Scott Davis <stdavis@utah.gov>"
