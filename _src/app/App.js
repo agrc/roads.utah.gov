@@ -390,7 +390,7 @@ define([
                             config.fields.sherlockData.ROAD_CLASS,
                             config.fields.roads.CO_UNIQUE[0],
                             config.fields.roads.S_NAME[0],
-                            fieldInfo[0]
+                            config.fields.roads.RD_ID[0]
                         ],
                         token: config.token
                     }
