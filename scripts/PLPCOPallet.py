@@ -63,6 +63,7 @@ class PLPCOBasePallet(Pallet):
                                 ('PLPCO/Videos', 'MapServer'),
                                 ('PLPCO_washington/BackgroundLayers', 'MapServer'),
                                 ('PLPCO_washington/RoadsGeneral', 'MapServer'),
+                                ('PLPCO_washington/RoadsSecure', 'MapServer'),
                                 ('PLPCO_washington/SherlockData', 'MapServer')]
 
 
