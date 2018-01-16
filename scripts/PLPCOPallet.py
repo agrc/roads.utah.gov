@@ -6,10 +6,10 @@ Creates optimized data for sherlock widget by combining Class B &
 D dissolved data into a single feature class for each county.
 '''
 
-import arcpy
-from forklift.models import Pallet, Crate
-from os.path import join, basename
+from os.path import basename, join
 
+import arcpy
+from forklift.models import Crate, Pallet
 
 counties = ['Beaver',
             'BoxElder',
@@ -60,7 +60,10 @@ class PLPCOBasePallet(Pallet):
                                 ('PLPCO/RoadsGeneral', 'MapServer'),
                                 ('PLPCO/RoadsSecure', 'MapServer'),
                                 ('PLPCO/SherlockData', 'MapServer'),
-                                ('PLPCO/Videos', 'MapServer')]
+                                ('PLPCO/Videos', 'MapServer'),
+                                ('PLPCO_washington/BackgroundLayers', 'MapServer'),
+                                ('PLPCO_washington/RoadsGeneral', 'MapServer'),
+                                ('PLPCO_washington/SherlockData', 'MapServer')]
 
 
 class PLPCOPallet(PLPCOBasePallet):
