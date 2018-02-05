@@ -13,7 +13,7 @@ define([
     // force api to use CORS on mapserv thus removing the test request on app load
     // e.g. http://mapserv.utah.gov/ArcGIS/rest/info?f=json
     esriConfig.defaults.io.corsEnabledServers.push('mapserv.utah.gov');
-    esriConfig.defaults.io.corsEnabledServers.push('basemaps.utah.gov');
+    esriConfig.defaults.io.corsEnabledServers.push('gis.trustlands.utah.gov');
     esriConfig.defaults.io.corsEnabledServers.push('api.mapserv.utah.gov');
     esriConfig.defaults.io.corsEnabledServers.push('discover.utah.gov');
 
@@ -97,7 +97,8 @@ define([
 
             plss: 'http://tiles.arcgis.com/tiles/99lidPhWCzftIe9K/arcgis/rest/services/UtahPLSS/VectorTileServer',
             backgroundLayers: backgroundLayers,
-            landOwnership: 'https://tlamap.trustlands.utah.gov/arcgis/rest/services/SpecialProject/UT_SITLA_LandOwnership_WM/MapServer',
+            landOwnership: 'https://gis.trustlands.utah.gov/server' +
+                           '/rest/services/Ownership/UT_SITLA_Ownership_LandOwnership_WM/FeatureServer/0',
             sherlockData: localBase + 'SherlockData/MapServer',
             roadsUrl: roadsUrl,
             roadsSecureUrl: localBase + 'RoadsSecure/MapServer',
