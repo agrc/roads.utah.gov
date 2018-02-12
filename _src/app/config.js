@@ -98,7 +98,7 @@ define([
             plss: 'http://tiles.arcgis.com/tiles/99lidPhWCzftIe9K/arcgis/rest/services/UtahPLSS/VectorTileServer',
             backgroundLayers: backgroundLayers,
             landOwnership: 'https://gis.trustlands.utah.gov/server' +
-                           '/rest/services/Ownership/UT_SITLA_Ownership_LandOwnership_WM/FeatureServer/0',
+                           '/rest/services/Ownership/UT_SITLA_Ownership_LandOwnership_WM/MapServer',
             sherlockData: localBase + 'SherlockData/MapServer',
             roadsUrl: roadsUrl,
             roadsSecureUrl: localBase + 'RoadsSecure/MapServer',
