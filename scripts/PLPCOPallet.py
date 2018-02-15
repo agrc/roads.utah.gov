@@ -113,7 +113,7 @@ class PLPCOVideoPallet(PLPCOBasePallet):
             arcpy.management.AddField(logs, fldYoutube_URL, 'TEXT', field_length=50)
             arcpy.management.AddField(logs, fldCOUNTY, 'TEXT', field_length=15)
 
-        for crate in [crate for crate in self.get_crates() if crate.result[0] in [Crate.CREATED, Crate.UPDATED]]:
+        for crate in [crate for crate in self.get_crates() if crate.was_updated()]:
             self.log.info('populating video routes and logs for: ' + crate.destination_name)
 
             county = crate.source_name.split('_')[0]
@@ -157,7 +157,7 @@ class PLPCORoadsPallet(PLPCOBasePallet):
         self.log.info('Building combined datasets for sherlock')
 
         for crate in self.get_crates():
-            if crate.result[0] not in [Crate.CREATED, Crate.UPDATED]:
+            if not crate.was_updated():
                 continue
 
             self.log.info(crate.destination_name)
