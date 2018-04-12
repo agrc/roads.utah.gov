@@ -9,7 +9,7 @@ D dissolved data into a single feature class for each county.
 from os.path import basename, join
 
 import arcpy
-from forklift.models import Crate, Pallet
+from forklift.models import Pallet
 
 counties = ['Beaver',
             'BoxElder',
@@ -35,20 +35,18 @@ counties = ['Beaver',
             'Wayne']
 
 fldROAD_CLASS = 'ROAD_CLASS'
-fldRD_ID = 'RD_ID'
-fldGPX_Name = 'GPX_Name'
+fldName = 'Name'
 fldYoutube_URL = 'Youtube_URL'
 fldDateTimeS = 'DateTimeS'
-fldGPX_in_Database = 'GPX_in_Database'
 fldCOUNTY = 'COUNTY'
 
 shape_token = 'SHAPE@XY'
 
 photos_name = 'Litigation_RoadPhotos'
-video_log_name = '{}_CO_VIDEO_LOG'
+video_log_name = 'Video_Log'
 
 
-class PLPCOBasePallet(Pallet):
+class Base(Pallet):
     def build(self, config):
         self.log.info('building...')
         self.plpco_sde = join(self.garage, 'PLPCO.sde')
@@ -67,7 +65,7 @@ class PLPCOBasePallet(Pallet):
                                 ('PLPCO_washington/SherlockData', 'MapServer')]
 
 
-class PLPCOPallet(PLPCOBasePallet):
+class PLPCOPallet(Base):
     def build(self, config):
         super(PLPCOPallet, self).build(config)
 
@@ -79,7 +77,7 @@ class PLPCOPallet(PLPCOBasePallet):
         self.add_crates(['WildernessProp_RedRock', 'Wilderness_BLMWSAs'], {'source_workspace': self.sgid, 'destination_workspace': self.reference_data})
 
 
-class PLPCOVideoPallet(PLPCOBasePallet):
+class PLPCOVideoPallet(Base):
     def build(self, config):
         super(PLPCOVideoPallet, self).build(config)
 
@@ -87,64 +85,41 @@ class PLPCOVideoPallet(PLPCOBasePallet):
 
         self.copy_data = [self.videos]
 
-        table_names = []
+        videoRouteFCs = []
 
         self.log.info('finding video logs and adding crates')
         for county in counties:
-            name = 'PLPCO.UOK.{}_CO_VIDEO_LOG'.format(county.upper())
+            name = 'PLPCO.UOK.{}'.format(county)
             if arcpy.Exists(join(self.plpco_sde, name)):
-                table_names.append(name.split('.')[-1])
+                videoRouteFCs.append(name.split('.')[-1])
 
-        self.add_crates(table_names, {'source_workspace': self.plpco_sde, 'destination_workspace': self.videos})
+        self.add_crates(videoRouteFCs + [video_log_name], {'source_workspace': self.plpco_sde, 'destination_workspace': self.videos})
 
     def process(self):
         routes = join(self.videos, 'ROUTES')
         if not arcpy.Exists(routes):
             arcpy.management.CreateFeatureclass(self.videos, basename(routes), geometry_type='POINT', spatial_reference=arcpy.SpatialReference(3857))
-            arcpy.management.AddField(routes, fldGPX_Name, 'TEXT', field_length=20)
+            arcpy.management.AddField(routes, fldName, 'TEXT', field_length=20)
             arcpy.management.AddField(routes, fldDateTimeS, 'TEXT', field_length=32)
             arcpy.management.AddField(routes, fldCOUNTY, 'TEXT', field_length=15)
 
-        logs = join(self.videos, 'LOGS')
-        if not arcpy.Exists(logs):
-            arcpy.management.CreateTable(self.videos, basename(logs))
-            arcpy.management.AddField(logs, fldRD_ID, 'TEXT', field_length=20)
-            arcpy.management.AddField(logs, fldGPX_Name, 'TEXT', field_length=20)
-            arcpy.management.AddField(logs, fldYoutube_URL, 'TEXT', field_length=50)
-            arcpy.management.AddField(logs, fldCOUNTY, 'TEXT', field_length=15)
+        for crate in [crate for crate in self.get_crates() if crate.was_updated() and crate.destination_name != video_log_name]:
+            county = crate.destination_name
+            self.log.info('populating video routes for: ' + county)
 
-        for crate in [crate for crate in self.get_crates() if crate.was_updated()]:
-            self.log.info('populating video routes and logs for: ' + crate.destination_name)
+            #: clear out this county's data
+            with arcpy.da.UpdateCursor(routes, ['OID@'], '{} = \'{}\''.format(fldCOUNTY, county)) as delete_cursor:
+                for row in delete_cursor:
+                    delete_cursor.deleteRow()
 
-            county = crate.source_name.split('_')[0]
-            for dataset in [routes, logs]:
-                with arcpy.da.UpdateCursor(dataset, ['OID@'], '{} = \'{}\''.format(fldCOUNTY, county)) as delete_cursor:
-                    for row in delete_cursor:
-                        delete_cursor.deleteRow()
-
-            log_query = '{} IS NOT NULL AND {} IS NOT NULL'.format(fldGPX_Name, fldGPX_in_Database)
-            with arcpy.da.SearchCursor(crate.destination, [fldRD_ID, fldGPX_Name, fldYoutube_URL], log_query) as log_cursor, \
-                    arcpy.da.Editor(self.videos), \
-                    arcpy.da.InsertCursor(routes, [fldGPX_Name, fldDateTimeS, fldCOUNTY, shape_token]) as routes_cursor, \
-                    arcpy.da.InsertCursor(logs, [fldRD_ID, fldGPX_Name, fldYoutube_URL, fldCOUNTY]) as logs_cursor:
-                for rd_id, gpx_name, youtube_url in log_cursor:
-                    gpx_fc = join(self.plpco_sde, 'PLPCO.UOK.VideoRoute', 'PLPCO.UOK.' + gpx_name)
-                    try:
-                        with arcpy.da.SearchCursor(gpx_fc, [fldDateTimeS, shape_token], spatial_reference=arcpy.SpatialReference(3857)) as gpx_cursor:
-                            for datetime, shape in gpx_cursor:
-                                routes_cursor.insertRow((gpx_name, datetime, county, shape))
-                    except RuntimeError:
-                        msg = 'Missing video route: {}'.format(gpx_name)
-                        if self.success[0]:
-                            self.success = (False, msg)
-                        else:
-                            self.success = (False, self.success[1] + '\n' + msg)
-                        self.log.warning(msg)
-
-                    logs_cursor.insertRow((rd_id, gpx_name, youtube_url, county))
+            with arcpy.da.Editor(self.videos), \
+                    arcpy.da.SearchCursor(crate.destination, [fldName, fldDateTimeS, shape_token]) as source_cursor, \
+                    arcpy.da.InsertCursor(routes, [fldName, fldDateTimeS, fldCOUNTY, shape_token]) as destination_cursor:
+                for name, datetime, shape in source_cursor:
+                    destination_cursor.insertRow((name, datetime, county, shape))
 
 
-class PLPCORoadsPallet(PLPCOBasePallet):
+class PLPCORoadsPallet(Base):
     def build(self, config):
         super(PLPCORoadsPallet, self).build(config)
 

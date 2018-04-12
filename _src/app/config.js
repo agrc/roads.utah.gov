@@ -78,9 +78,10 @@ define([
                 HOTLINK: 'HOTLINK'
             },
             videos: {
-                GPX_Name: 'GPX_Name',
+                Name: 'Name',
                 DateTimeS: 'DateTimeS',
-                Youtube_URL: 'Youtube_URL'
+                Youtube_URL: 'Youtube_URL',
+                GPX_Name: 'GPX_Name'
             }
         },
         urls: {

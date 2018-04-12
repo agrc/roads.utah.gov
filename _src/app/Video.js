@@ -47,8 +47,7 @@ define([
             const query = new Query();
             query.outFields = ['*'];
             query.returnGeometry = true;
-            const field = config.fields.videos.GPX_Name;
-            query.where = `${field} = '${this.attributes[field]}'`;
+            query.where = `${config.fields.videos.Name} = '${this.attributes[config.fields.videos.GPX_Name]}'`;
 
             videoRoutesTask.execute(query).then((response) => {
                 if (response.features.length > 0) {
