@@ -44,6 +44,7 @@ shape_token = 'SHAPE@XY'
 
 photos_name = 'Litigation_RoadPhotos'
 video_log_name = 'Video_Log'
+video_routes_dataset = 'VideoRoute'
 
 
 class Base(Pallet):
@@ -91,10 +92,11 @@ class PLPCOVideoPallet(Base):
         self.log.info('finding video logs and adding crates')
         for county in counties:
             name = 'PLPCO.UOK.{}'.format(county)
-            if arcpy.Exists(join(self.plpco_sde, name)):
+            if arcpy.Exists(join(self.plpco_sde, video_routes_dataset, name)):
                 videoRouteFCs.append(name.split('.')[-1])
 
-        self.add_crates(videoRouteFCs + [video_log_name], {'source_workspace': self.plpco_sde, 'destination_workspace': self.videos})
+        self.add_crates(videoRouteFCs, {'source_workspace': join(self.plpco_sde, video_routes_dataset), 'destination_workspace': self.videos})
+        self.add_crates([video_log_name], {'source_workspace': self.plpco_sde, 'destination_workspace': self.videos})
 
     def process(self):
         routes = join(self.videos, 'ROUTES')
