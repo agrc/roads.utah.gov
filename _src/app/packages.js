@@ -30,6 +30,10 @@ require({
             name: 'spin',
             location: './spinjs',
             main: 'spin'
+        }, {
+            name: 'polyfill',
+            location: '../node_modules/@babel/polyfill',
+            main: 'dist/polyfill'
         }
     ],
     map: {

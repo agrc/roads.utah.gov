@@ -67,9 +67,7 @@ module.exports = function configure(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         babel: {
             options: {
-                sourceMap: true,
-                presets: ['latest'],
-                plugins: ['transform-remove-strict-mode']
+                sourceMap: true
             },
             src: {
                 files: [{
