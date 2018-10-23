@@ -1,6 +1,7 @@
 _SpecRunner.html
 .DS_Store
 .grunt/
+.vscode/
 *.odc
 *.pyc
 *.sde
