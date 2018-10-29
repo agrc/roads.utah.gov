@@ -135,7 +135,7 @@ define([
             udotHistoricD: `${imageServiceBase}UDOTHistoric_D/ImageServer`,
             udotHistoricMaps: `${imageServiceBase}UDOTHistoric_B/ImageServer`,
 
-            plss: 'http://tiles.arcgis.com/tiles/99lidPhWCzftIe9K/arcgis/rest/services/UtahPLSS/VectorTileServer',
+            plss: 'https://tiles.arcgis.com/tiles/99lidPhWCzftIe9K/arcgis/rest/services/UtahPLSS/VectorTileServer',
             backgroundLayers: backgroundLayers,
             landOwnership: 'https://gis.trustlands.utah.gov/server' +
                            '/rest/services/Ownership/UT_SITLA_Ownership_LandOwnership_WM/MapServer',
