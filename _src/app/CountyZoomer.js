@@ -58,7 +58,9 @@ define([
         // maskSymbol: SimpleFillSymbol
         maskSymbol: new SimpleFillSymbol(
             SimpleFillSymbol.STYLE_SOLID,
-            null, new Color([0, 0, 0, 0.5])),
+            null,
+            new Color([0, 0, 0, 0.7])
+        ),
 
         // gLayer: GraphicsLayer
         //      The graphics layer that the mask graphic is put into
@@ -108,7 +110,9 @@ define([
             this.maskTask = new QueryTask(config.urls.maskQueryTaskUrl);
             this.maskTask.on('complete', lang.hitch(this, 'onMaskComplete'));
 
-            if (currentCounty) {
+            if (config.counties.length === 1) {
+                this.zoom(config.counties[0], false);
+            } else if (currentCounty) {
                 this.zoom(currentCounty);
             }
         },
@@ -147,13 +151,15 @@ define([
 
             window.alert('There was an error with the county query!');
         },
-        zoom: function (countyName) {
+        zoom: function (countyName, updateLocalStorage = true) {
             // summary:
             //      zooms to the county
             // countyName: String
             console.log('app/CountyZoomer:zoom', arguments);
 
-            window.localStorage.setItem(this.currentCountyKey, countyName);
+            if (updateLocalStorage) {
+                window.localStorage.setItem(this.currentCountyKey, countyName);
+            }
 
             this.gLayer.clear();
 

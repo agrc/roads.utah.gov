@@ -17,17 +17,56 @@ define([
     esriConfig.defaults.io.corsEnabledServers.push('api.mapserv.utah.gov');
     esriConfig.defaults.io.corsEnabledServers.push('discover.utah.gov');
 
-    var localBase = '/arcgis/rest/services/PLPCO/';
-    var roadsUrl = localBase + 'RoadsGeneral/MapServer';
-    var fldREQUEST = 'REQUEST';
-    var backgroundLayers = localBase + 'BackgroundLayers/MapServer';
-    var videos = localBase + 'Videos/MapServer';
+    let counties = [
+        'Beaver',
+        'Box Elder',
+        'Carbon',
+        'Daggett',
+        'Duchesne',
+        'Emery',
+        'Garfield',
+        'Grand',
+        'Iron',
+        'Juab',
+        'Millard',
+        'Piute',
+        'Rich',
+        'San Juan',
+        'Sanpete',
+        'Sevier',
+        'Tooele',
+        'Uintah',
+        'Utah',
+        'Washington',
+        'Wayne',
+        'Kane'
+    ];
+    const urlParams = new URLSearchParams(new URL(window.location).search);
+    let appName = 'plpco';
+    let localBase = '/arcgis/rest/services/PLPCO/';
+    const imageServiceBase = localBase;
+
+    if (urlParams.has('county')) {
+        const urlCounty = urlParams.get('county').toLowerCase();
+
+        counties = counties.filter(county => {
+            return county.toLowerCase() === urlCounty;
+        });
+
+        appName += `_${urlCounty}`;
+        localBase = localBase.replace('PLPCO', `PLPCO_${urlCounty}`);
+    }
+
+    const roadsUrl = localBase + 'RoadsGeneral/MapServer';
+    const fldREQUEST = 'REQUEST';
+    const backgroundLayers = imageServiceBase + 'BackgroundLayers/MapServer';
+    const videos = localBase + 'Videos/MapServer';
 
     window.AGRC = {
         // version.: String
         //      The version number.
         version: '2.2.3',
-        appName: 'plpco',
+        appName,
 
         // app: App
         //      global reference to app
@@ -89,19 +128,19 @@ define([
             photosBase: '/wddr',
 
             // image services
-            localBase: localBase,
-            historic15: localBase + 'HistoricQuads_15Minute/ImageServer',
-            historic75: localBase + 'HistoricQuads_75Minute/ImageServer',
-            imagery76: localBase + 'UtahDOQ_76/ImageServer',
-            udotHistoricD: localBase + 'UDOTHistoric_D/ImageServer',
-            udotHistoricMaps: localBase + 'UDOTHistoric_B/ImageServer',
+            localBase,
+            historic15: `${imageServiceBase}HistoricQuads_15Minute/ImageServer`,
+            historic75: `${imageServiceBase}HistoricQuads_75Minute/ImageServer`,
+            imagery76: `${imageServiceBase}UtahDOQ_76/ImageServer`,
+            udotHistoricD: `${imageServiceBase}UDOTHistoric_D/ImageServer`,
+            udotHistoricMaps: `${imageServiceBase}UDOTHistoric_B/ImageServer`,
 
             plss: 'http://tiles.arcgis.com/tiles/99lidPhWCzftIe9K/arcgis/rest/services/UtahPLSS/VectorTileServer',
             backgroundLayers: backgroundLayers,
             landOwnership: 'https://gis.trustlands.utah.gov/server' +
                            '/rest/services/Ownership/UT_SITLA_Ownership_LandOwnership_WM/MapServer',
             sherlockData: localBase + 'SherlockData/MapServer',
-            roadsUrl: roadsUrl,
+            roadsUrl,
             roadsSecureUrl: localBase + 'RoadsSecure/MapServer',
             videoRoutes: videos + '/0',
             videoLogs: videos + '/1',
@@ -111,30 +150,7 @@ define([
             redRockAreas: backgroundLayers + '/2'
             /* eslint-enable max-len */
         },
-        counties: [
-            'Beaver',
-            'Box Elder',
-            'Carbon',
-            'Daggett',
-            'Duchesne',
-            'Emery',
-            'Garfield',
-            'Grand',
-            'Iron',
-            'Juab',
-            'Millard',
-            'Piute',
-            'Rich',
-            'San Juan',
-            'Sanpete',
-            'Sevier',
-            'Tooele',
-            'Uintah',
-            'Utah',
-            'Washington',
-            'Wayne',
-            'Kane'
-        ],
+        counties,
         featureClassNames: {
             counties: 'SGID10.Boundaries.Counties',
             cities: 'SGID10.BOUNDARIES.Municipalities_Carto',
@@ -153,7 +169,7 @@ define([
         window.AGRC.quadWord = 'pancake-economy-raymond-sonic';
     } else {
         // localhost
-        xhr(require.baseUrl + 'secrets.json', {
+        xhr(`${document.location.href.split('?')[0]}/secrets.json`, {
             handleAs: 'json',
             sync: true
         }).then(function (secrets) {

@@ -138,9 +138,9 @@ define([
                     f: 'json'
                 }
             }).then(function (data) {
-                var b = data.layers[2].legend[0].imageData;
+                var b = data.layers[0].legend[0].imageData;
                 that.legendB.src = 'data:image/png;base64,' + b;
-                var d = data.layers[3].legend[0].imageData;
+                var d = data.layers[1].legend[0].imageData;
                 that.legendD.src = 'data:image/png;base64,' + d;
             });
         },
