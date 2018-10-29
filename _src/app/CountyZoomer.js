@@ -112,6 +112,7 @@ define([
 
             if (config.counties.length === 1) {
                 this.zoom(config.counties[0], false);
+                document.getElementsByClassName('side-bar-padder')[0].className += ' hidden';
             } else if (currentCounty) {
                 this.zoom(currentCounty);
             }
