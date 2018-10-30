@@ -203,7 +203,7 @@ define([
 
             // city search
             this.muni = new Sherlock({
-                provider: new WebAPI(config.apiKey, config.featureClassNames.cities, 'NAME'),
+                provider: new WebAPI(config.apiKey, config.featureClassNames.cities, 'NAME', { wkid: 3857 }),
                 map: this.map,
                 placeHolder: 'Municipality'
             }, this.citySherlockDiv);
@@ -212,7 +212,7 @@ define([
 
             // gnis search
             this.place = new Sherlock({
-                provider: new WebAPI(config.apiKey, config.featureClassNames.gnis, 'NAME'),
+                provider: new WebAPI(config.apiKey, config.featureClassNames.gnis, 'NAME', { wkid: 3857 }),
                 map: this.map,
                 placeHolder: 'Place Name'
             }, this.placeSherlockDiv);
