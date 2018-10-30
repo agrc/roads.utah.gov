@@ -125,7 +125,7 @@ define([
         },
         urls: {
             /* eslint-disable max-len */
-            photosBase: '/wddr',
+            photosBase: 'https://roads.utah.gov/wddr',
 
             // image services
             localBase,
