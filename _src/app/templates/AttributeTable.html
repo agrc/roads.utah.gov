@@ -1,0 +1,20 @@
+<div>
+    <div class="modal fade" role="dialog" data-dojo-attach-point="dialog">
+        <div class="modal-dialog attribute-table-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Class ${roadType} Road Attribute Table</h4>
+                </div>
+                <div class="modal-body">
+                    <div data-dojo-attach-point="gridDiv"></div>
+                </div>
+                <div class="modal-footer">
+                    <span class="pull-left">Click on a field name to sort.</span>
+                    <button data-dojo-attach-event="click: onZoomClick"
+                        class="btn btn-sm btn-primary">Zoom To Selected Road</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

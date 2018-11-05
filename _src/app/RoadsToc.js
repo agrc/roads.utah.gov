@@ -214,12 +214,20 @@ define([
                 if (this.bTable) {
                     this.bTable.show();
                 } else {
-                    this.bTable = new AttributeTable(this.county, 'B', this.getSubLayersRoadsLayer);
+                    this.bTable = new AttributeTable({
+                        county: this.county,
+                        roadType: 'B',
+                        getSubLayersRoadsLayer: this.getSubLayersRoadsLayer
+                    }, document.body.appendChild(document.createElement('div')));
                 }
             } else if (this.dTable) {
                 this.dTable.show();
             } else {
-                this.dTable = new AttributeTable(this.county, 'D', this.getSubLayersRoadsLayer);
+                this.dTable = new AttributeTable({
+                    county: this.county,
+                    roadType: 'D',
+                    getSubLayersRoadsLayer: this.getSubLayersRoadsLayer
+                }, document.body.appendChild(document.createElement('div')));
             }
         }
     });
