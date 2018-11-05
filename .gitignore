@@ -1,6 +1,7 @@
 _SpecRunner.html
 .DS_Store
 .grunt/
+.tern-project
 .vscode/
 *.odc
 *.pyc
