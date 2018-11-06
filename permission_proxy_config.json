@@ -3,7 +3,29 @@
         "name": "plpco",
         "description": "PLPCO Roads Viewer",
         "baseUrl": "roads.utah.gov",
-        "adminPage": "/user_admin.html"
+        "adminPage": "/user_admin.html",
+        "AccessRules": false,
+        "customEmails": {}
+    },
+    "adminEmails": [
+        "<jason wolf>"
+    ],
+    "roles": [
+        "admin",
+        "user"
+    ],
+    "creationToken": "<token>"
+}
+
+// for a county-specific viewer:
+{
+    "application": {
+        "name": "plpco_kane",
+        "description": "PLPCO Roads Viewer (Kane County)",
+        "baseUrl": "roads.utah.gov",
+        "adminPage": "/user_admin.html?county=kane",
+        "AccessRules": false,
+        "customEmails": {}
     },
     "adminEmails": [
         "<jason wolf>"
