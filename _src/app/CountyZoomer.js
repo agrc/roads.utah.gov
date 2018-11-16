@@ -111,7 +111,13 @@ define([
             this.maskTask.on('complete', lang.hitch(this, 'onMaskComplete'));
 
             if (config.counties.length === 1) {
-                this.zoom(config.counties[0], false);
+                const county = config.counties[0];
+                let name = county;
+                if (county.hasOwnProperty('name')) {
+                    name = county.name;
+                }
+
+                this.zoom(name, false);
                 document.getElementsByClassName('side-bar-padder')[0].className += ' hidden';
             } else if (currentCounty) {
                 this.zoom(currentCounty);
