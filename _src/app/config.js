@@ -39,7 +39,10 @@ define([
         'Utah',
         'Washington',
         'Wayne',
-        'Kane'
+        {
+            name: 'Kane',
+            displayName: 'Bellwether'
+        }
     ];
     const urlParams = new URLSearchParams(new URL(window.location).search);
     let appName = 'plpco';
@@ -50,6 +53,12 @@ define([
         const urlCounty = urlParams.get('county').toLowerCase();
 
         counties = counties.filter(county => {
+            if (county.hasOwnProperty('name') && county.name.toLowerCase() === urlCounty) {
+                return true;
+            } else if (county.hasOwnProperty('name')) {
+                return false;
+            }
+
             return county.toLowerCase() === urlCounty;
         });
 

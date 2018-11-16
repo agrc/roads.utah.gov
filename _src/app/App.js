@@ -115,7 +115,7 @@ define([
             this.version.innerHTML = config.version;
 
             if (config.counties.length === 1) {
-                this.title.innerHTML += ` - ${config.counties[0]}`;
+                this.title.innerHTML += ` - ${config.counties[0].displayName || config.counties[0]}`;
             }
 
             var paneStack = new PaneStack(null, 'pane-stack');
