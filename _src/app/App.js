@@ -247,11 +247,11 @@ define([
             if (config.user) {
                 baseLayers = baseLayers.concat([
                     {
-                        id: 'Historic 15',
+                        id: 'Historic 15 Min Topo',
                         Factory: ArcGISImageServiceLayer,
                         url: addToken(config.urls.historic15)
                     }, {
-                        id: 'Historic 7.5 Historic Imagery',
+                        id: 'Historic 7.5 Min Topo',
                         Factory: ArcGISImageServiceLayer,
                         url: addToken(config.urls.historic75)
                     }, {
