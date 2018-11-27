@@ -28,6 +28,10 @@ define([
         'Grand',
         'Iron',
         'Juab',
+        {
+            name: 'Kane',
+            displayName: 'Bellwether'
+        },
         'Millard',
         'Piute',
         'Rich',
@@ -38,11 +42,7 @@ define([
         'Uintah',
         'Utah',
         'Washington',
-        'Wayne',
-        {
-            name: 'Kane',
-            displayName: 'Bellwether'
-        }
+        'Wayne'
     ];
     const urlParams = new URLSearchParams(new URL(window.location).search);
     let appName = 'plpco';
@@ -74,7 +74,7 @@ define([
     window.AGRC = {
         // version.: String
         //      The version number.
-        version: '2.3.1',
+        version: '2.3.2',
         appName,
 
         // app: App
