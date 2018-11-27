@@ -90,14 +90,18 @@ define([
             var currentCounty = window.localStorage.getItem(this.currentCountyKey);
 
             // build buttons
-            config.counties.forEach(function buildButton(county) {
-                var btn = domConstruct.create('button', {
+            config.counties.forEach(county => {
+                if (county.hasOwnProperty('name')) {
+                    county = county.name;
+                }
+
+                const btn = domConstruct.create('button', {
                     className: 'btn btn-primary',
                     type: 'button',
                     innerHTML: county
                 }, this.body);
-                on(btn, 'click', lang.hitch(this, 'onCountyClick'));
-            }, this);
+                on(btn, 'click', this.onCountyClick.bind(this));
+            });
 
             $(this.dialog).modal({
                 show: currentCounty === null
