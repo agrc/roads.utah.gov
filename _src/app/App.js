@@ -381,7 +381,7 @@ define([
                 this.sherlocks = [];
             }
 
-            var layerIndex = config.counties.indexOf(county);
+            var layerIndex = this.getCountyIndex(county);
             var getPlaceHolder = function (field) {
                 return field[1] + ' (' + field[0] + ')';
             };
@@ -414,6 +414,24 @@ define([
             buildWidget(config.fields.roads.RD_ID);
             buildWidget(config.fields.roads.CO_UNIQUE);
             buildWidget(config.fields.roads.S_NAME);
+        },
+
+        getCountyIndex(name) {
+            // summary:
+            //      gets the index of the county that correlates with the sherlock service
+            console.log('app/App:getCountyIndex', arguments);
+
+            let index;
+
+            config.counties.some((arrayItem, i) => {
+                if (arrayItem === name || arrayItem.name === name) {
+                    index = i;
+
+                    return true;
+                }
+            });
+
+            return index;
         }
     });
 });

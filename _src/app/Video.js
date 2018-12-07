@@ -63,8 +63,6 @@ define([
                     this.popupWindow.close();
                 }
             });
-
-            this.inherited(arguments);
         },
         parsePoints(points) {
             // summary:

@@ -22,5 +22,15 @@ function (
         it('creates a valid object', function () {
             expect(testWidget).toEqual(jasmine.any(App));
         });
+
+        describe('getCountyIndex', () => {
+            it('returns the correct index for a number', () => {
+                expect(testWidget.getCountyIndex('Carbon')).toBe(2);
+            });
+
+            it('returns the correct index for an object', () => {
+                expect(testWidget.getCountyIndex('Kane')).toBe(10);
+            });
+        });
     });
 });
