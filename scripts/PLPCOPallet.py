@@ -133,7 +133,6 @@ class PLPCORoadsPallet(Base):
 
     def process(self):
         self.log.info('Building combined datasets for sherlock')
-
         for crate in self.get_crates():
             if not crate.was_updated():
                 continue
@@ -172,3 +171,11 @@ class PLPCORoadsPallet(Base):
 
             self.log.info('Deleting layer')
             arcpy.Delete_management(lyr)
+
+        #: this is a fix for an issue with the data not drawing correctly when zooming in
+        self.log.info('Rebuilding spatial indexes')
+        with arcpy.EnvManager(workspace=self.plpco):
+            for feature_class in arcpy.ListFeatureClasses():
+                print(feature_class)
+                arcpy.management.RemoveSpatialIndex(feature_class)
+                arcpy.management.AddSpatialIndex(feature_class)
