@@ -1,6 +1,6 @@
 {
     "name": "roads.app",
-    "version": "2.3.4",
+    "version": "2.3.5",
     "main": "main",
     "description": "PLPCO Roads Viewer",
     "homepage": "https://github.com/agrc/roads.utah.gov",
